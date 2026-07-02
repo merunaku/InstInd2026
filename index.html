@@ -214,15 +214,15 @@
         
         <div id="welcome-screen" class="card screen active">
             <h2>¡Simulador Activo!</h2>
-            <p>Evalúa tus competencias técnicas de manera aleatoria.</p>
+            <p>Evalúa tus conocimientos.</p>
             
             <div class="details-box">
                 <strong>Condiciones de Evaluación:</strong>
                 <ul>
                     <li><strong>20 preguntas aleatorias</strong> en cada intento.</li>
                     <li>Las alternativas se barajan automáticamente.</li>
-                    <li>Escala Chilena: <strong>60% de exigencia (Nota 4.0)</strong>.</li>
-                    <li>Tu resultado se registrará en el sistema.</li>
+                    <li>Escala: <strong>60% de exigencia (Nota 4.0)</strong>.</li>
+                    <li></li>
                 </ul>
             </div>
 
@@ -277,13 +277,12 @@
         let timerInterval = null;
         let totalSeconds = 0;
 
-        // URL DE TU SCRIPT DE GOOGLE SHEETS (Debes reemplazar esto cuando crees el tuyo)
+        // URL DE TU SCRIPT DE GOOGLE SHEETS
         const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbyqVtpcr-RK5fuFjmpQndZd21Z7zVjMX9D8yydyMdzrLzUzCSSDqZB9bDkUM95SXhQ/exec"; 
 
         // --- INICIALIZACIÓN: DESCARGAR CSV DESDE GITHUB ---
         window.onload = async () => {
             try {
-                // Fetch busca el archivo preguntas.csv en la misma carpeta del servidor
                 const response = await fetch('preguntas.csv'); 
                 if (!response.ok) throw new Error("No se pudo leer el archivo");
                 
@@ -335,8 +334,9 @@
             return result;
         }
 
+        // Modificado para tolerar variaciones menores en el CSV
         function processRow(row, resultList) {
-            if (row.length >= 9 && row[0] !== "Número de Pregunta" && row[0] !== "0" && row[0] !== "") {
+            if (row.length >= 8 && row[0] !== "Número de Pregunta" && row[0] !== "0" && row[0] !== "") {
                 let ansLetter = row[7] ? row[7].trim().toUpperCase() : '';
                 let idx = -1;
                 
@@ -366,6 +366,7 @@
             return array;
         }
 
+        // Formatea el tiempo en formato MM:SS
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
             const secs = (seconds % 60).toString().padStart(2, '0');
@@ -490,34 +491,29 @@
             feedbackMsg.innerText = "Guardando resultado en el servidor...";
             feedbackMsg.style.color = "#555";
 
-            // Guardar historial en Google Sheets
-            if(GOOGLE_SHEETS_URL !== "https://script.google.com/macros/s/AKfycbyqVtpcr-RK5fuFjmpQndZd21Z7zVjMX9D8yydyMdzrLzUzCSSDqZB9bDkUM95SXhQ/exec") {
-                const formData = new FormData();
-                formData.append('nombre', nombre);
-                formData.append('nota', finalGrade.toFixed(1));
-                formData.append('puntaje', score);
-                formData.append('tiempo', timeString);
+            // Guardar historial en Google Sheets sin el bloqueo anterior
+            const formData = new FormData();
+            formData.append('nombre', nombre);
+            formData.append('nota', finalGrade.toFixed(1));
+            formData.append('puntaje', score);
+            formData.append('tiempo', timeString);
 
-                fetch(GOOGLE_SHEETS_URL, { method: 'POST', body: formData })
-                    .then(response => {
-                        feedbackMsg.innerText = finalGrade >= 4.0 ? "¡Resultado guardado! Aprobaste con éxito." : "Resultado guardado. ¡A seguir repasando!";
-                        feedbackMsg.style.color = finalGrade >= 4.0 ? "var(--success-color)" : "var(--error-color)";
-                    })
-                    .catch(error => {
-                        console.error('Error al guardar:', error);
-                        feedbackMsg.innerText = "Error al guardar el resultado en la nube, pero tu nota es válida.";
-                        feedbackMsg.style.color = "var(--error-color)";
-                    });
-            } else {
-                feedbackMsg.innerText = finalGrade >= 4.0 ? "¡Aprobado! (Configura tu Google Sheets para guardar historiales)" : "Reprobado. (Configura tu Google Sheets para guardar historiales)";
-                feedbackMsg.style.color = finalGrade >= 4.0 ? "var(--success-color)" : "var(--error-color)";
-            }
+            fetch(GOOGLE_SHEETS_URL, { method: 'POST', body: formData })
+                .then(response => {
+                    feedbackMsg.innerText = "¡Resultado guardado en la nube con éxito!";
+                    feedbackMsg.style.color = "var(--success-color)";
+                })
+                .catch(error => {
+                    console.error('Error al guardar:', error);
+                    feedbackMsg.innerText = "Error de conexión al guardar el resultado, pero tu nota es válida.";
+                    feedbackMsg.style.color = "var(--error-color)";
+                });
         }
 
         function goToWelcome() {
             document.getElementById('result-screen').classList.remove('active');
             document.getElementById('welcome-screen').classList.add('active');
-            document.getElementById('nombre-alumno').value = ""; // Limpiar nombre
+            document.getElementById('nombre-alumno').value = "";
         }
     </script>
 </body>
