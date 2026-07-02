@@ -27,18 +27,68 @@
             min-height: 100vh;
         }
 
-        header {
-            background-color: var(--primary-color);
-            color: white;
+        /* DISEÑO DE LA NUEVA BARRA SUPERIOR CON MARCA PERSONAL */
+        .quiz-header {
+            box-sizing: border-box;
+            background-color: #ffffff;
+            color: #333;
             width: 100%;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-bottom: 5px solid var(--secondary-color);
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            border-bottom: 4px solid var(--secondary-color);
         }
 
-        header h1 { margin: 0; font-size: 1.6rem; padding: 0 15px; }
-        header p { margin: 5px 0 0 0; font-size: 1rem; opacity: 0.9; }
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            height: 42px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: 0.3px;
+        }
+
+        .title-container h1 { 
+            margin: 0; 
+            font-size: 1.3rem; 
+            color: #4b5563;
+            font-weight: 600;
+            text-align: right;
+        }
+        
+        .title-container p { 
+            margin: 2px 0 0 0; 
+            font-size: 0.85rem; 
+            color: #888; 
+            font-weight: bold;
+            text-align: right;
+        }
+
+        /* RESPONSIVE PARA EL ENCABEZADO EN CELULARES */
+        @media (max-width: 520px) {
+            .quiz-header {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+                padding: 12px 15px;
+            }
+            .title-container h1, .title-container p {
+                text-align: center;
+            }
+        }
 
         .container {
             width: 90%;
@@ -205,10 +255,16 @@
 </head>
 <body>
 
-    <header>
-        <h1>Instrumentación Industrial 2026</h1>
-        <p>Simulador de Evaluación &bull; IPCHILE</p>
-    </header>
+    <div class="quiz-header">
+        <div class="brand-container">
+            <img src="logo.png" alt="Logo" class="brand-logo">
+            <span class="brand-name">ProfeDiego</span>
+        </div>
+        <div class="title-container">
+            <h1>Instrumentación Industrial</h1>
+            <p>Simulador de Evaluación &bull; IPCHILE</p>
+        </div>
+    </div>
 
     <div class="container">
         
@@ -263,22 +319,22 @@
                 <div id="time-output" style="font-size: 0.95rem; color: #666; margin-top: 5px;">Tiempo total: 00:00</div>
                 <div id="feedback-message" style="margin-top: 15px; font-weight: bold; font-size: 1rem;">Guardando resultado en el servidor...</div>
             </div>
+            
             <div id="leaderboard-section" style="margin: 25px 0; display: none; font-family: sans-serif;">
-    <h3 style="text-align: center; color: #2c3e50; margin-bottom: 12px; font-size: 1.2rem;">🏆 Tabla de Líderes (Top 5)</h3>
-    <table style="width: 100%; border-collapse: collapse; background: #fdfdfd; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-radius: 8px; overflow: hidden; font-size: 0.95rem;">
-        <thead>
-            <tr style="background-color: #34495e; color: white; text-align: left;">
-                <th style="padding: 10px; text-align: center; width: 15%;">Pos</th>
-                <th style="padding: 10px; width: 45%;">Nombre</th>
-                <th style="padding: 10px; text-align: center; width: 15%;">Puntos</th>
-                <th style="padding: 10px; text-align: center; width: 15%;">Nota</th>
-                <th style="padding: 10px; text-align: center; width: 10%;">Tiempo</th>
-            </tr>
-        </thead>
-        <tbody id="leaderboard-body">
-            </tbody>
-    </table>
-</div>
+                <h3 style="text-align: center; color: #2c3e50; margin-bottom: 12px; font-size: 1.2rem;">🏆 Tabla de Líderes (Top 10)</h3>
+                <table style="width: 100%; border-collapse: collapse; background: #fdfdfd; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-radius: 8px; overflow: hidden; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="background-color: #34495e; color: white; text-align: left;">
+                            <th style="padding: 10px; text-align: center; width: 15%;">Pos</th>
+                            <th style="padding: 10px; width: 45%;">Nombre</th>
+                            <th style="padding: 10px; text-align: center; width: 15%;">Puntos</th>
+                            <th style="padding: 10px; text-align: center; width: 15%;">Nota</th>
+                            <th style="padding: 10px; text-align: center; width: 10%;">Tiempo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
+            </div>
             <button class="btn" onclick="goToWelcome()">Realizar un nuevo intento</button>
         </div>
     </div>
@@ -350,7 +406,6 @@
             return result;
         }
 
-        // Modificado para tolerar variaciones menores en el CSV
         function processRow(row, resultList) {
             if (row.length >= 8 && row[0] !== "Número de Pregunta" && row[0] !== "0" && row[0] !== "") {
                 let ansLetter = row[7] ? row[7].trim().toUpperCase() : '';
@@ -382,7 +437,6 @@
             return array;
         }
 
-        // Formatea el tiempo en formato MM:SS
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
             const secs = (seconds % 60).toString().padStart(2, '0');
@@ -487,7 +541,7 @@
             return Math.round(grade * 10) / 10;
         }
 
-       function finishQuiz() {
+        function finishQuiz() {
             clearInterval(timerInterval);
             document.getElementById('quiz-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
@@ -507,16 +561,16 @@
             feedbackMsg.innerText = "Guardando resultado en el servidor...";
             feedbackMsg.style.color = "#555";
 
-            // SOLUCIÓN: Usar URLSearchParams para forzar el formato correcto compatible con e.parameter
-            const notaConComa = finalGrade.toFixed(1).replace('.', ','); // <-- Línea nueva para cambiar el punto por coma
+            // Corrección de formato decimal para evitar errores de fecha en Google Sheets en español
+            const notaConComa = finalGrade.toFixed(1).replace('.', ','); 
 
             const params = new URLSearchParams();
             params.append('nombre', nombre);
-            params.append('nota', notaConComa); // <-- Aquí cambiamos 'finalGrade.toFixed(1)' por 'notaConComa'
+            params.append('nota', notaConComa); 
             params.append('puntaje', score);
             params.append('tiempo', timeString);
 
-         fetch(GOOGLE_SHEETS_URL, { 
+            fetch(GOOGLE_SHEETS_URL, { 
                 method: 'POST', 
                 mode: 'no-cors', 
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -526,7 +580,7 @@
                 feedbackMsg.innerText = "¡Resultado enviado a la nube con éxito!";
                 feedbackMsg.style.color = "var(--success-color)";
                 
-                // NUEVO: Ejecuta la carga de la tabla de líderes aquí mismo
+                // Carga la tabla de líderes de forma inmediata
                 obtenerTablaLideres();
             })
             .catch(error => {
@@ -541,45 +595,45 @@
             document.getElementById('welcome-screen').classList.add('active');
             document.getElementById('nombre-alumno').value = "";
         }
-function obtenerTablaLideres() {
-    const leaderboardSection = document.getElementById('leaderboard-section');
-    const leaderboardBody = document.getElementById('leaderboard-body');
-    
-    fetch(GOOGLE_SHEETS_URL)
-    .then(response => response.json())
-    .then(data => {
-        leaderboardBody.innerHTML = ""; 
-        
-        if (data.length === 0) {
-            leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">No hay puntajes registrados aún.</td></tr>`;
-        } else {
-            data.forEach((alumno, index) => {
-                // Medallas para el podio, números para el resto del Top 10
-                let posicion = index + 1;
-                if (index === 0) posicion = "🥇";
-                if (index === 1) posicion = "🥈";
-                if (index === 2) posicion = "🥉";
 
-                const fila = document.createElement('tr');
-                fila.style.borderBottom = "1px solid #eef2f3";
-                fila.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa"; 
+        function obtenerTablaLideres() {
+            const leaderboardSection = document.getElementById('leaderboard-section');
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            
+            fetch(GOOGLE_SHEETS_URL)
+            .then(response => response.json())
+            .then(data => {
+                leaderboardBody.innerHTML = ""; 
                 
-                fila.innerHTML = `
-                    <td style="padding: 10px; text-align: center; font-weight: bold;">${posicion}</td>
-                    <td style="padding: 10px; color: #333; font-weight: 500;">${alumno.nombre}</td>
-                    <td style="padding: 10px; text-align: center; font-weight: bold; color: #2980b9;">${alumno.puntaje}</td>
-                    <td style="padding: 10px; text-align: center; font-weight: bold; color: #27ae60;">${alumno.nota}</td>
-                    <td style="padding: 10px; text-align: center; color: #7f8c8d; font-size: 0.85rem; font-weight: bold;">⏱️ ${alumno.tiempo}</td>
-                `;
-                leaderboardBody.appendChild(fila);
+                if (data.length === 0) {
+                    leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">No hay puntajes registrados aún.</td></tr>`;
+                } else {
+                    data.forEach((alumno, index) => {
+                        let posicion = index + 1;
+                        if (index === 0) posicion = "🥇";
+                        if (index === 1) posicion = "🥈";
+                        if (index === 2) posicion = "🥉";
+
+                        const fila = document.createElement('tr');
+                        fila.style.borderBottom = "1px solid #eef2f3";
+                        fila.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa"; 
+                        
+                        fila.innerHTML = `
+                            <td style="padding: 10px; text-align: center; font-weight: bold;">${posicion}</td>
+                            <td style="padding: 10px; color: #333; font-weight: 500;">${alumno.nombre}</td>
+                            <td style="padding: 10px; text-align: center; font-weight: bold; color: #2980b9;">${alumno.puntaje}</td>
+                            <td style="padding: 10px; text-align: center; font-weight: bold; color: #27ae60;">${alumno.nota}</td>
+                            <td style="padding: 10px; text-align: center; color: #7f8c8d; font-size: 0.85rem; font-weight: bold;">⏱️ ${alumno.tiempo}</td>
+                        `;
+                        leaderboardBody.appendChild(fila);
+                    });
+                }
+                leaderboardSection.style.display = "block";
+            })
+            .catch(err => {
+                console.error("Error al obtener el ranking:", err);
             });
         }
-        leaderboardSection.style.display = "block";
-    })
-    .catch(err => {
-        console.error("Error al obtener el ranking:", err);
-    });
-}
     </script>
 </body>
 </html>
