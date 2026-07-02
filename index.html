@@ -278,7 +278,7 @@
         let totalSeconds = 0;
 
         // URL DE TU SCRIPT DE GOOGLE SHEETS
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbyscpz5Ro6dB04UUPycW5Q8ib0HwAiOv0RWoj1_MTdbOWxj7Mf8S66jhYUEi9AXrOE/exec"; 
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxGGtmKMcxExUIrhUq8Ix4oF8nCefZGXW-VlCokfBsnM9bAmw3lC2jcpbLM0jHJJ9cz/exec"; 
 
         // --- INICIALIZACIÓN: DESCARGAR CSV DESDE GITHUB ---
         window.onload = async () => {
@@ -471,7 +471,7 @@
             return Math.round(grade * 10) / 10;
         }
 
-        function finishQuiz() {
+       function finishQuiz() {
             clearInterval(timerInterval);
             document.getElementById('quiz-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
@@ -491,23 +491,30 @@
             feedbackMsg.innerText = "Guardando resultado en el servidor...";
             feedbackMsg.style.color = "#555";
 
-            // Guardar historial en Google Sheets sin el bloqueo anterior
-            const formData = new FormData();
-            formData.append('nombre', nombre);
-            formData.append('nota', finalGrade.toFixed(1));
-            formData.append('puntaje', score);
-            formData.append('tiempo', timeString);
+            // SOLUCIÓN: Usar URLSearchParams para forzar el formato correcto compatible con e.parameter
+            const params = new URLSearchParams();
+            params.append('nombre', nombre);
+            params.append('nota', finalGrade.toFixed(1));
+            params.append('puntaje', score);
+            params.append('tiempo', timeString);
 
-            fetch(GOOGLE_SHEETS_URL, { method: 'POST', body: formData })
-                .then(response => {
-                    feedbackMsg.innerText = "¡Resultado guardado en la nube con éxito!";
-                    feedbackMsg.style.color = "var(--success-color)";
-                })
-                .catch(error => {
-                    console.error('Error al guardar:', error);
-                    feedbackMsg.innerText = "Error de conexión al guardar el resultado, pero tu nota es válida.";
-                    feedbackMsg.style.color = "var(--error-color)";
-                });
+            fetch(GOOGLE_SHEETS_URL, { 
+                method: 'POST', 
+                mode: 'no-cors', // CRÍTICO: Evita que el navegador bloquee la petición por redirección de Google
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: params.toString() 
+            })
+            .then(() => {
+                feedbackMsg.innerText = "¡Resultado enviado a la nube con éxito!";
+                feedbackMsg.style.color = "var(--success-color)";
+            })
+            .catch(error => {
+                console.error('Error al guardar:', error);
+                feedbackMsg.innerText = "Error de conexión al guardar el resultado.";
+                feedbackMsg.style.color = "var(--error-color)";
+            });
         }
 
         function goToWelcome() {
