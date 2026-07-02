@@ -263,6 +263,22 @@
                 <div id="time-output" style="font-size: 0.95rem; color: #666; margin-top: 5px;">Tiempo total: 00:00</div>
                 <div id="feedback-message" style="margin-top: 15px; font-weight: bold; font-size: 1rem;">Guardando resultado en el servidor...</div>
             </div>
+            <div id="leaderboard-section" style="margin: 25px 0; display: none; font-family: sans-serif;">
+    <h3 style="text-align: center; color: #2c3e50; margin-bottom: 12px; font-size: 1.2rem;">🏆 Tabla de Líderes (Top 5)</h3>
+    <table style="width: 100%; border-collapse: collapse; background: #fdfdfd; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-radius: 8px; overflow: hidden; font-size: 0.95rem;">
+        <thead>
+            <tr style="background-color: #34495e; color: white; text-align: left;">
+                <th style="padding: 10px; text-align: center; width: 15%;">Pos</th>
+                <th style="padding: 10px; width: 45%;">Nombre</th>
+                <th style="padding: 10px; text-align: center; width: 15%;">Puntos</th>
+                <th style="padding: 10px; text-align: center; width: 15%;">Nota</th>
+                <th style="padding: 10px; text-align: center; width: 10%;">Tiempo</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboard-body">
+            </tbody>
+    </table>
+</div>
             <button class="btn" onclick="goToWelcome()">Realizar un nuevo intento</button>
         </div>
     </div>
@@ -278,7 +294,7 @@
         let totalSeconds = 0;
 
         // URL DE TU SCRIPT DE GOOGLE SHEETS
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwnx41-FqXMvmyJXUAS9K3PHVV_a8KePrO_q3mREmS6y1ROdCKmF-N8zZ_JF5qWrOct/exec"; 
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbyzv0c_x5_2BRUfiXEQNLcmERkBGnV6hQvPXIVfJU6Ye8ovhvVhkzWeCZEvg_sgVkA/exec"; 
 
         // --- INICIALIZACIÓN: DESCARGAR CSV DESDE GITHUB ---
         window.onload = async () => {
@@ -498,17 +514,18 @@
             params.append('puntaje', score);
             params.append('tiempo', timeString);
 
-            fetch(GOOGLE_SHEETS_URL, { 
+         fetch(GOOGLE_SHEETS_URL, { 
                 method: 'POST', 
-                mode: 'no-cors', // CRÍTICO: Evita que el navegador bloquee la petición por redirección de Google
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: params.toString() 
             })
             .then(() => {
                 feedbackMsg.innerText = "¡Resultado enviado a la nube con éxito!";
                 feedbackMsg.style.color = "var(--success-color)";
+                
+                // NUEVO: Ejecuta la carga de la tabla de líderes aquí mismo
+                obtenerTablaLideres();
             })
             .catch(error => {
                 console.error('Error al guardar:', error);
@@ -522,6 +539,48 @@
             document.getElementById('welcome-screen').classList.add('active');
             document.getElementById('nombre-alumno').value = "";
         }
+        function obtenerTablaLideres() {
+    const leaderboardSection = document.getElementById('leaderboard-section');
+    const leaderboardBody = document.getElementById('leaderboard-body');
+    
+    // Hace una petición GET automática a Google para leer el Top 5
+    fetch(GOOGLE_SHEETS_URL)
+    .then(response => response.json())
+    .then(data => {
+        leaderboardBody.innerHTML = ""; // Limpiar registros viejos si los hay
+        
+        if (data.length === 0) {
+            leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">No hay puntajes registrados aún.</td></tr>`;
+        } else {
+            data.forEach((alumno, index) => {
+                // Decoración divertida para los tres primeros lugares
+                let posicion = index + 1;
+                if (index === 0) posicion = "🥇";
+                if (index === 1) posicion = "🥈";
+                if (index === 2) posicion = "🥉";
+
+                const fila = document.createElement('tr');
+                fila.style.borderBottom = "1px solid #eef2f3";
+                // Color de fondo alternado para las filas
+                fila.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa"; 
+                
+                fila.innerHTML = `
+                    <td style="padding: 10px; text-align: center; font-weight: bold;">${posicion}</td>
+                    <td style="padding: 10px; color: #333; font-weight: 500;">${alumno.nombre}</td>
+                    <td style="padding: 10px; text-align: center; font-weight: bold; color: #2980b9;">${alumno.puntaje}</td>
+                    <td style="padding: 10px; text-align: center; font-weight: bold; color: ${alumno.nota >= 4.0 ? '#27ae60' : '#c0392b'};">${alumno.nota}</td>
+                    <td style="padding: 10px; text-align: center; color: #7f8c8d; font-size: 0.85rem;">${alumno.tiempo}</td>
+                `;
+                leaderboardBody.appendChild(fila);
+            });
+        }
+        // Mostramos la tabla en pantalla una vez armada
+        leaderboardSection.style.display = "block";
+    })
+    .catch(err => {
+        console.error("Error al obtener el ranking:", err);
+    });
+}
     </script>
 </body>
 </html>
