@@ -349,7 +349,7 @@
         let totalSeconds = 0;
 
         // URL DE TU SCRIPT DE GOOGLE SHEETS
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycby9CYPKtnAooOxplswAA9EpIG3e7opsUOG3YEoT3ac-OP9hl4Rq7f9g-f8uFVBKTib0/exec"; 
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbw46HZO4J-9mJonYU_qB_fkW27jjZs6F-TO67abPBwksyknCi8Yu-eNT9WZpNsrHhSG/exec"; 
 
         // --- INICIALIZACIÓN: DESCARGAR CSV DESDE GITHUB ---
         window.onload = async () => {
@@ -596,45 +596,48 @@
         }
 
         // --- SISTEMA DE LECTURA DE LÍDERES DESDE EL EXCEL ---
-        function obtenerTablaLideres() {
-            const leaderboardSection = document.getElementById('leaderboard-section');
-            const leaderboardBody = document.getElementById('leaderboard-body');
-            
-            fetch(GOOGLE_SHEETS_URL)
-            .then(response => response.json())
-            .then(data => {
-                leaderboardBody.innerHTML = ""; 
-                
-                if (data.length === 0) {
-                    leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">No hay puntajes registrados aún.</td></tr>`;
-                } else {
-                    data.forEach((alumno, index) => {
-                        let posicion = index + 1;
-                        if (index === 0) posicion = "🥇";
-                        if (index === 1) posicion = "🥈";
-                        if (index === 2) posicion = "🥉";
+function obtenerTablaLideres() {
+    const leaderboardSection = document.getElementById('leaderboard-section');
+    const leaderboardBody = document.getElementById('leaderboard-body');
+    
+    fetch(GOOGLE_SHEETS_URL)
+    .then(response => response.json())
+    .then(data => {
+        leaderboardBody.innerHTML = ""; 
+        
+        if (data.length === 0) {
+            leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">No hay puntajes registrados aún.</td></tr>`;
+        } else {
+            data.forEach((alumno, index) => {
+                let posicion = index + 1;
+                if (index === 0) posicion = "🥇";
+                if (index === 1) posicion = "🥈";
+                if (index === 2) posicion = "🥉";
 
-                        const fila = document.createElement('tr');
-                        fila.style.borderBottom = "1px solid #eef2f3";
-                        fila.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa"; 
-                        
-                        // Corregido para sincronizar con los nombres de variables exactos mapeados en doGet()
-                        fila.innerHTML = `
-                            <td style="padding: 10px; text-align: center; font-weight: bold;">${posicion}</td>
-                            <td style="padding: 10px; color: #333; font-weight: 500;">${alumno.nombre}</td>
-                            <td style="padding: 10px; text-align: center; font-weight: bold; color: #2980b9;">${alumno.puntaje}</td>
-                            <td style="padding: 10px; text-align: center; font-weight: bold; color: #27ae60;">${alumno.nota}</td>
-                            <td style="padding: 10px; text-align: center; color: #7f8c8d; font-size: 0.85rem; font-weight: bold;">⏱️ ${alumno.tiempo}</td>
-                        `;
-                        leaderboardBody.appendChild(fila);
-                    });
-                }
-                leaderboardSection.style.display = "block";
-            })
-            .catch(err => {
-                console.error("Error al obtener el ranking:", err);
+                const fila = document.createElement('tr');
+                fila.style.borderBottom = "1px solid #eef2f3";
+                fila.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa"; 
+                
+                // Convertimos la nota de texto ("4,0") a número válido para JavaScript ("4.0") antes de comparar el color
+                const notaNumerica = parseFloat(String(alumno.nota).replace(',', '.'));
+                const colorNota = notaNumerica >= 4.0 ? '#27ae60' : '#c0392b';
+
+                fila.innerHTML = `
+                    <td style="padding: 10px; text-align: center; font-weight: bold;">${posicion}</td>
+                    <td style="padding: 10px; color: #333; font-weight: 500;">${alumno.nombre}</td>
+                    <td style="padding: 10px; text-align: center; font-weight: bold; color: #2980b9;">${alumno.puntaje}</td>
+                    <td style="padding: 10px; text-align: center; font-weight: bold; color: ${colorNota};">${alumno.nota}</td>
+                    <td style="padding: 10px; text-align: center; color: #7f8c8d; font-size: 0.85rem; font-weight: bold;">⏱️ ${alumno.tiempo}</td>
+                `;
+                leaderboardBody.appendChild(fila);
             });
         }
+        leaderboardSection.style.display = "block";
+    })
+    .catch(err => {
+        console.error("Error al obtener el ranking:", err);
+    });
+}
     </script>
 </body>
 </html>
