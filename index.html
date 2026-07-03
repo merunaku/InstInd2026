@@ -6,7 +6,7 @@
     <title>Examen Instrumentación Industrial 2026</title>
     <style>
         :root {
-            /* TUS COLORES ORIGINALES RECUPERADOS */
+            /* COLORES ORIGINALES */
             --primary-color: #002b5c;
             --secondary-color: #f4b223;
             --bg-color: #f7f9fc;
@@ -28,7 +28,7 @@
             min-height: 100vh;
         }
 
-        /* ENCABEZADO CLÁSICO CORREGIDO PARA EVITAR EXCESO DE SEPARACIÓN */
+        /* ENCABEZADO */
         header {
             background-color: var(--primary-color);
             color: white;
@@ -38,9 +38,8 @@
             border-bottom: 5px solid var(--secondary-color);
         }
 
-        /* Contenedor interno para alinear logo y textos sin que se dispersen */
         .header-container {
-            max-width: 600px; /* Mismo ancho máximo que tus tarjetas del examen */
+            max-width: 600px;
             width: 90%;
             margin: 0 auto;
             display: flex;
@@ -76,17 +75,7 @@
         .title-layout h1 { margin: 0; font-size: 1.3rem; }
         .title-layout p { margin: 3px 0 0 0; font-size: 0.85rem; opacity: 0.9; }
 
-        /* Ajuste responsivo para celulares */
-        @media (max-width: 480px) {
-            .header-container {
-                flex-direction: column;
-                text-align: center;
-            }
-            .title-layout {
-                text-align: center;
-            }
-        }
-
+        /* CONTENEDOR PRINCIPAL SEMÁNTICO */
         .container {
             width: 90%;
             max-width: 600px;
@@ -113,6 +102,7 @@
 
         h2 { color: var(--primary-color); margin-top: 0; }
 
+        /* BOTONES */
         .btn {
             background-color: var(--primary-color);
             color: white;
@@ -123,13 +113,17 @@
             cursor: pointer;
             width: 100%;
             font-weight: bold;
-            transition: all 0.2s;
+            transition: all 0.2s ease-in-out;
             margin-top: 15px;
         }
 
-        .btn:hover { background-color: #002244; }
-        .btn:disabled { background-color: #cccccc; cursor: not-allowed; }
+        .btn:hover { background-color: #002244; transform: translateY(-1px); }
+        .btn:active { transform: translateY(1px); }
+        .btn:disabled { background-color: #cccccc; cursor: not-allowed; transform: none; }
+        
+        #start-btn, #next-btn { display: none; }
 
+        /* BARRA DE PROGRESO */
         .progress-bar {
             background-color: #e0e0e0;
             border-radius: 10px;
@@ -145,6 +139,17 @@
             width: 0%;
             transition: width 0.3s ease;
         }
+
+        /* METADATOS DE PREGUNTA (FLEXBOX EVITA FLOATS) */
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        #question-counter { font-size: 0.9rem; color: #666; }
+        .timer-txt { font-weight: bold; color: #555; }
 
         .question-txt {
             font-size: 1.15rem;
@@ -164,6 +169,7 @@
             margin-bottom: 10px;
         }
 
+        /* OPCIONES */
         .options-list {
             display: flex;
             flex-direction: column;
@@ -200,6 +206,7 @@
             color: #721c24;
         }
 
+        /* RETROALIMENTACIÓN */
         .justification-box {
             display: none;
             background-color: #f0fdf4;
@@ -212,8 +219,7 @@
             animation: fadeIn 0.4s ease;
         }
 
-        .timer-txt { font-weight: bold; color: #555; float: right; }
-        
+        /* RESULTADOS Y CALIFICACIÓN */
         .grade-badge {
             font-size: 3.5rem;
             font-weight: bold;
@@ -234,6 +240,7 @@
             font-size: 0.95rem;
         }
 
+        /* INPUTS */
         .input-nombre {
             width: 100%;
             padding: 12px;
@@ -242,11 +249,77 @@
             font-size: 1rem;
             margin-bottom: 10px;
             box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .input-nombre:focus {
             border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 43, 92, 0.1);
             outline: none;
+        }
+
+        /* EFECTO PULSE PARA EL LOADER */
+        .db-loader-text {
+            text-align: center;
+            color: var(--secondary-color);
+            font-weight: bold;
+            margin-top: 15px;
+            animation: pulseText 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* TABLA DE POSICIONES OPTIMIZADA Y RESPONSIVA */
+        .leaderboard-container {
+            margin: 25px 0;
+            display: none;
+        }
+
+        .leaderboard-h3 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fdfdfd;
+            font-size: 0.95rem;
+            white-space: nowrap; /* Evita que los nombres se rompan feo en pantallas chicas */
+        }
+
+        .leaderboard-table thead tr {
+            background-color: #34495e;
+            color: white;
+            text-align: left;
+        }
+
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 12px 10px;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 480px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .title-layout {
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -265,7 +338,7 @@
         </div>
     </header>
 
-    <div class="container">
+    <main class="container">
         
         <div id="welcome-screen" class="card screen active">
             <h2>¡Simulador Activo!</h2>
@@ -283,60 +356,62 @@
 
             <input type="text" id="nombre-alumno" class="input-nombre" placeholder="Ingresa tu Nombre y Apellido para comenzar">
 
-            <div id="db-loader" style="text-align: center; color: var(--secondary-color); font-weight: bold; margin-top: 15px;">
+            <div id="db-loader" class="db-loader-text">
                 Conectando con el servidor y descargando preguntas...
             </div>
 
-            <button id="start-btn" class="btn" style="display:none;" onclick="startQuiz()">Iniciar Evaluación Aleatoria</button>
+            <button id="start-btn" class="btn" onclick="startQuiz()">Iniciar Evaluación Aleatoria</button>
         </div>
 
         <div id="quiz-screen" class="card screen">
             <div class="progress-bar"><div id="progress" class="progress"></div></div>
-            <div>
-                <span id="question-counter" style="font-size: 0.9rem; color: #666;">Pregunta X de 20</span>
+            
+            <div class="quiz-meta">
+                <span id="question-counter">Pregunta X de 20</span>
                 <span id="timer" class="timer-txt">00:00</span>
             </div>
-            <div style="clear:both;"></div>
             
             <div id="topic-container" class="topic-tag">Tópico</div>
             <div class="question-txt" id="question-text">Cargando pregunta...</div>
             <div class="options-list" id="options-container"></div>
             
             <div id="justification-container" class="justification-box">
-                <strong>Justificación Técnica:</strong> <span id="justification-text"></span>
+                <strong>Justificación Técnico-Pedagógica:</strong> <span id="justification-text"></span>
             </div>
             
-            <button id="next-btn" class="btn" style="display:none;" onclick="nextQuestion()">Avanzar Pregunta</button>
+            <button id="next-btn" class="btn" onclick="nextQuestion()">Avanzar Pregunta</button>
         </div>
 
         <div id="result-screen" class="card screen">
             <h2>Resumen del Intento</h2>
             <div class="score-display">
-                <div style="font-size: 1.1rem; color: #555;">Tu calificación final es:</div>
+                <div style="font-size: 1.1rem; color: #555; text-align: center;">Tu calificación final es:</div>
                 <div id="grade-output" class="grade-badge">1.0</div>
-                <div id="score-output" style="font-size: 1.1rem; font-weight: bold; color: #333;">Puntaje: 0 / 20 correctas</div>
-                <div id="time-output" style="font-size: 0.95rem; color: #666; margin-top: 5px;">Tiempo total: 00:00</div>
-                <div id="feedback-message" style="margin-top: 15px; font-weight: bold; font-size: 1rem;">Guardando resultado en el servidor...</div>
+                <div id="score-output" style="font-size: 1.1rem; font-weight: bold; color: #333; text-align: center;">Puntaje: 0 / 20 correctas</div>
+                <div id="time-output" style="font-size: 0.95rem; color: #666; margin-top: 5px; text-align: center;">Tiempo total: 00:00</div>
+                <div id="feedback-message" style="margin-top: 15px; font-weight: bold; font-size: 1rem; text-align: center;">Guardando resultado en el servidor...</div>
             </div>
 
-            <div id="leaderboard-section" style="margin: 25px 0; display: none; font-family: sans-serif;">
-                <h3 style="text-align: center; color: #2c3e50; margin-bottom: 12px; font-size: 1.2rem;">🏆 Tabla de Líderes (Top 10)</h3>
-                <table style="width: 100%; border-collapse: collapse; background: #fdfdfd; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-radius: 8px; overflow: hidden; font-size: 0.95rem;">
-                    <thead>
-                        <tr style="background-color: #34495e; color: white; text-align: left;">
-                            <th style="padding: 10px; text-align: center; width: 15%;">Pos</th>
-                            <th style="padding: 10px; width: 45%;">Nombre</th>
-                            <th style="padding: 10px; text-align: center; width: 15%;">Puntos</th>
-                            <th style="padding: 10px; text-align: center; width: 15%;">Nota</th>
-                            <th style="padding: 10px; text-align: center; width: 10%;">Tiempo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-body"></tbody>
-                </table>
+            <div id="leaderboard-section" class="leaderboard-container">
+                <h3 class="leaderboard-h3">🏆 Tabla de Líderes (Top 10)</h3>
+                <div class="table-responsive">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; width: 15%;">Pos</th>
+                                <th style="width: 45%;">Nombre</th>
+                                <th style="text-align: center; width: 15%;">Puntos</th>
+                                <th style="text-align: center; width: 15%;">Nota</th>
+                                <th style="text-align: center; width: 10%;">Tiempo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body"></tbody>
+                    </table>
+                </div>
             </div>
             <button class="btn" onclick="goToWelcome()">Realizar un nuevo intento</button>
         </div>
-    </div>
+    </main>
 
     <script>
         // --- VARIABLES GLOBALES ---
@@ -405,6 +480,7 @@
             return result;
         }
 
+        // Se procesa la fila mapeando las columnas correctas
         function processRow(row, resultList) {
             if (row.length >= 8 && row[0] !== "Número de Pregunta" && row[0] !== "0" && row[0] !== "") {
                 let ansLetter = row[7] ? row[7].trim().toUpperCase() : '';
@@ -596,48 +672,48 @@
         }
 
         // --- SISTEMA DE LECTURA DE LÍDERES DESDE EL EXCEL ---
-function obtenerTablaLideres() {
-    const leaderboardSection = document.getElementById('leaderboard-section');
-    const leaderboardBody = document.getElementById('leaderboard-body');
-    
-    fetch(GOOGLE_SHEETS_URL)
-    .then(response => response.json())
-    .then(data => {
-        leaderboardBody.innerHTML = ""; 
-        
-        if (data.length === 0) {
-            leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">No hay puntajes registrados aún.</td></tr>`;
-        } else {
-            data.forEach((alumno, index) => {
-                let posicion = index + 1;
-                if (index === 0) posicion = "🥇";
-                if (index === 1) posicion = "🥈";
-                if (index === 2) posicion = "🥉";
-
-                const fila = document.createElement('tr');
-                fila.style.borderBottom = "1px solid #eef2f3";
-                fila.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa"; 
+        function obtenerTablaLideres() {
+            const leaderboardSection = document.getElementById('leaderboard-section');
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            
+            fetch(GOOGLE_SHEETS_URL)
+            .then(response => response.json())
+            .then(data => {
+                leaderboardBody.innerHTML = ""; 
                 
-                // Convertimos la nota de texto ("4,0") a número válido para JavaScript ("4.0") antes de comparar el color
-                const notaNumerica = parseFloat(String(alumno.nota).replace(',', '.'));
-                const colorNota = notaNumerica >= 4.0 ? '#27ae60' : '#c0392b';
+                if (data.length === 0) {
+                    leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">No hay puntajes registrados aún.</td></tr>`;
+                } else {
+                    data.forEach((alumno, index) => {
+                        let posicion = index + 1;
+                        if (index === 0) posicion = "🥇";
+                        if (index === 1) posicion = "🥈";
+                        if (index === 2) posicion = "🥉";
 
-                fila.innerHTML = `
-                    <td style="padding: 10px; text-align: center; font-weight: bold;">${posicion}</td>
-                    <td style="padding: 10px; color: #333; font-weight: 500;">${alumno.nombre}</td>
-                    <td style="padding: 10px; text-align: center; font-weight: bold; color: #2980b9;">${alumno.puntaje}</td>
-                    <td style="padding: 10px; text-align: center; font-weight: bold; color: ${colorNota};">${alumno.nota}</td>
-                    <td style="padding: 10px; text-align: center; color: #7f8c8d; font-size: 0.85rem; font-weight: bold;">⏱️ ${alumno.tiempo}</td>
-                `;
-                leaderboardBody.appendChild(fila);
+                        const fila = document.createElement('tr');
+                        fila.style.borderBottom = "1px solid #eef2f3";
+                        fila.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa"; 
+                        
+                        // Convertimos la nota de texto ("4,0") a número válido para JavaScript ("4.0") antes de comparar el color
+                        const notaNumerica = parseFloat(String(alumno.nota).replace(',', '.'));
+                        const colorNota = notaNumerica >= 4.0 ? '#27ae60' : '#c0392b';
+
+                        fila.innerHTML = `
+                            <td style="padding: 10px; text-align: center; font-weight: bold;">${posicion}</td>
+                            <td style="padding: 10px; color: #333; font-weight: 500;">${alumno.nombre}</td>
+                            <td style="padding: 10px; text-align: center; font-weight: bold; color: #2980b9;">${alumno.puntaje}</td>
+                            <td style="padding: 10px; text-align: center; font-weight: bold; color: ${colorNota};">${alumno.nota}</td>
+                            <td style="padding: 10px; text-align: center; color: #7f8c8d; font-size: 0.85rem; font-weight: bold;">⏱️ ${alumno.tiempo}</td>
+                        `;
+                        leaderboardBody.appendChild(fila);
+                    });
+                }
+                leaderboardSection.style.display = "block";
+            })
+            .catch(err => {
+                console.error("Error al obtener el ranking:", err);
             });
         }
-        leaderboardSection.style.display = "block";
-    })
-    .catch(err => {
-        console.error("Error al obtener el ranking:", err);
-    });
-}
     </script>
 </body>
 </html>
