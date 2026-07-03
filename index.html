@@ -4,25 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Examen Instrumentación Industrial 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* NUEVA PALETA DE COLORES - BASADA EN EL EXAMEN DE NORMATIVA */
-            --primary-color: #1e293b;       /* Azul Slate Profundo */
-            --primary-light: #334155;     /* Slate Secundario */
-            --accent-color: #0284c7;      /* Azul Eléctrico Normativa */
-            --accent-hover: #0369a1;      /* Azul Eléctrico Hover */
-            --bg-color: #f8fafc;          /* Fondo Ultra Claro Líquido */
+            /* COLORES INSTITUCIONALES ADAPTADOS */
+            --primary-color: #002b5c;
+            --primary-dark: #001a38;
+            --secondary-color: #f4b223;
+            --bg-color: #f7f9fc;
             --card-bg: #ffffff;
-            --text-color: #0f172a;        /* Texto Principal Casi Negro */
-            --text-muted: #64748b;       /* Texto Secundario Gris */
-            --success-color: #10b981;     /* Verde Esmeralda Éxito */
-            --error-color: #ef4444;       /* Rojo Coral Error */
-            --border-radius: 12px;
+            --text-color: #2c3e50;
+            --success-color: #28a745;
+            --error-color: #dc3545;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Quicksand', 'Segoe UI', system-ui, sans-serif;
+            /* Fondo vivo con transición suave de colores */
+            background: linear-gradient(-45deg, #e0f2fe, #fef3c7, #e0e7ff, #f0fdf4);
+            background-size: 400% 400%;
+            animation: gradientBg 12s ease infinite;
             color: var(--text-color);
             margin: 0;
             padding: 0;
@@ -30,48 +31,53 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
         }
 
-        /* ENCABEZADO ESTILO NORMATIVA (REFINADO Y MODERNO) */
+        @keyframes gradientBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ENCABEZADO CON DEGRADADO INSTITUCIONAL DE ALTA FIDELIDAD */
         header {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
             width: 100%;
-            padding: 20px 0;
-            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
-            border-bottom: 4px solid var(--accent-color);
+            padding: 18px 0;
+            box-shadow: 0 4px 20px rgba(0, 43, 92, 0.15);
+            border-bottom: 5px solid var(--secondary-color);
+            z-index: 10;
         }
 
         .header-container {
-            max-width: 640px;
+            max-width: 600px;
             width: 90%;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px;
         }
 
         .brand-layout {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .brand-layout img {
-            height: 40px;
+            height: 38px;
             width: auto;
             object-fit: contain;
             border-radius: 6px;
-            filter: brightness(1.05);
         }
 
         .brand-layout span {
-            font-weight: 700;
-            font-size: 1.2rem;
-            letter-spacing: -0.3px;
+            font-weight: 900;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
         }
 
         .title-layout {
@@ -81,15 +87,14 @@
         .title-layout h1 { 
             margin: 0; 
             font-size: 1.35rem; 
-            font-weight: 800;
-            letter-spacing: -0.5px;
+            font-weight: 900;
         }
         
         .title-layout p { 
-            margin: 4px 0 0 0; 
+            margin: 3px 0 0 0; 
             font-size: 0.85rem; 
-            color: #94a3b8; 
-            font-weight: 500;
+            font-weight: 700;
+            color: #cbd5e1; 
         }
 
         @media (max-width: 480px) {
@@ -97,238 +102,255 @@
             .title-layout { text-align: center; }
         }
 
+        /* CONTENEDOR DE TARJETAS FLOTANTES (GLASSMORPHISM) */
         .container {
             width: 90%;
-            max-width: 640px;
+            max-width: 600px;
             margin: 30px 0;
             flex-grow: 1;
         }
 
-        /* TARJETAS MODERNAS CON SOMBRAS SUAVES */
         .card {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-            border: 1px solid #e2e8f0;
-            padding: 30px;
-            margin-bottom: 25px;
+            background-color: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px -12px rgba(0, 43, 92, 0.1), 0 10px 25px -10px rgba(0, 0, 0, 0.04);
+            padding: 35px 30px;
+            margin-bottom: 20px;
             box-sizing: border-box;
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
         }
 
         .screen { display: none; }
-        .active { display: block !important; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .active { display: block !important; animation: cardEntrance 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         h2 { 
             color: var(--primary-color); 
             margin-top: 0; 
-            font-size: 1.6rem; 
-            font-weight: 700;
+            font-weight: 900;
+            font-size: 1.75rem;
             letter-spacing: -0.5px;
         }
 
-        /* BOTONES DE ACCIÓN PRINCIPAL */
+        /* BOTONES DE ACCIÓN PRINCIPAL ACENTUADOS */
         .btn {
-            background-color: var(--accent-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
             border: none;
-            padding: 14px 24px;
-            font-size: 1rem;
-            border-radius: 8px;
+            padding: 16px 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 14px;
             cursor: pointer;
             width: 100%;
-            font-weight: 600;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: all 0.25s ease;
             margin-top: 15px;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 43, 92, 0.2);
         }
 
-        .btn:hover { background-color: var(--accent-hover); }
-        .btn:active { transform: scale(0.99); }
-        .btn:disabled { background-color: #cbd5e1; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
+        .btn:hover:not(:disabled) { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 43, 92, 0.3);
+            filter: brightness(1.1);
+        }
+        
+        .btn:active:not(:disabled) { transform: translateY(0); }
+        .btn:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
 
-        /* BARRA DE PROGRESO DELGADA Y ELEGANTE */
+        /* BARRA DE PROGRESO CORREDIZA */
         .progress-bar {
             background-color: #e2e8f0;
-            border-radius: 20px;
-            height: 6px;
+            border-radius: 50px;
+            height: 10px;
             width: 100%;
             margin-bottom: 25px;
             overflow: hidden;
         }
 
         .progress {
-            background-color: var(--accent-color);
+            background: linear-gradient(90deg, var(--secondary-color), #f59e0b);
             height: 100%;
             width: 0%;
             transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50px;
         }
 
         .question-txt {
             font-size: 1.2rem;
-            font-weight: 600;
+            font-weight: 700;
+            color: #1e293b;
             margin-bottom: 20px;
             line-height: 1.5;
-            color: var(--text-color);
         }
 
-        /* ETIQUETA DE TÓPICO */
         .topic-tag {
             display: inline-block;
-            background-color: #f1f5f9;
-            color: var(--primary-light);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
             font-weight: 700;
+            margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 12px;
-            border: 1px solid #e2e8f0;
         }
 
+        /* OPCIONES INTERACTIVAS DEL SIMULADOR */
         .options-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        /* OPCIONES AL ESTILO DE TU EXAMEN DE NORMATIVA */
         .option-btn {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 2px solid #e2e8f0;
             padding: 14px 18px;
             text-align: left;
-            border-radius: 8px;
-            font-size: 0.98rem;
-            font-weight: 500;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
             cursor: pointer;
-            transition: all 0.2s ease;
-            color: #334155;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-color);
             line-height: 1.4;
         }
 
         .option-btn:hover:not(:disabled) {
-            background-color: #f1f5f9;
-            border-color: #cbd5e1;
-            color: var(--text-color);
+            background: #ffffff;
+            border-color: var(--primary-color);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 43, 92, 0.05);
         }
 
+        /* ESTADOS CORRECTO E INCORRECTO */
         .option-btn.correct {
-            background-color: #ecfdf5 !important;
+            background: #dcfce7 !important;
             border-color: var(--success-color) !important;
-            color: #065f46 !important;
-            font-weight: 600;
+            color: #15803d !important;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
         }
 
         .option-btn.incorrect {
-            background-color: #fef2f2 !important;
+            background: #fee2e2 !important;
             border-color: var(--error-color) !important;
-            color: #991b1b !important;
+            color: #b91c1c !important;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
         }
 
-        /* CAJA DE JUSTIFICACIÓN */
+        /* CAJA DE RETROALIMENTACIÓN TÉCNICA */
         .justification-box {
             display: none;
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid var(--accent-color);
-            padding: 16px;
+            background-color: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            border-left: 6px solid var(--success-color);
+            padding: 18px;
             margin-top: 20px;
-            border-radius: 6px;
+            border-radius: 12px;
             font-size: 0.95rem;
             line-height: 1.5;
-            color: #475569;
-            animation: fadeIn 0.3s ease;
+            color: #166534;
+            animation: cardEntrance 0.3s ease;
         }
 
-        .justification-box strong {
-            color: var(--primary-color);
-        }
-
-        .timer-txt { font-weight: 700; color: var(--text-muted); float: right; font-variant-numeric: tabular-nums; }
+        .timer-txt { font-weight: 900; color: #64748b; float: right; font-size: 1.05rem; }
         
-        /* CALIFICACIÓN */
+        /* DISEÑO DE LA INSIGNIA DE CALIFICACIÓN */
         .grade-badge {
             font-size: 4rem;
-            font-weight: 800;
+            font-weight: 900;
             color: var(--primary-color);
             margin: 15px 0;
             text-align: center;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.05);
             letter-spacing: -1px;
         }
         
         .grade-badge.reprobo { color: var(--error-color); }
         .grade-badge.aprobo { color: var(--success-color); }
 
-        /* CAJA DE DETALLES INICIALES */
         .details-box {
             background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid var(--primary-light);
+            border-left: 6px solid var(--primary-color);
             padding: 18px;
             margin: 20px 0;
-            border-radius: 6px;
+            border-radius: 4px 16px 16px 4px;
             font-size: 0.95rem;
             color: #475569;
+            line-height: 1.6;
         }
+        
+        .details-box ul { margin: 6px 0 0 0; padding-left: 20px; }
+        .details-box li { margin-bottom: 4px; }
 
-        .details-box ul { margin: 8px 0 0 0; padding-left: 20px; }
-        .details-box li { margin-bottom: 6px; }
-
-        /* INPUT DE NOMBRE */
         .input-nombre {
             width: 100%;
-            padding: 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
+            padding: 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 14px;
             font-size: 1rem;
+            font-family: inherit;
+            font-weight: 700;
             margin-bottom: 12px;
             box-sizing: border-box;
-            background-color: #fff;
-            color: var(--text-color);
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
         }
 
         .input-nombre:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+            border-color: var(--primary-color);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 43, 92, 0.1);
             outline: none;
         }
 
-        /* TABLA DE POSICIONES (RANKING MODERNO) */
+        /* TABLA DE LÍDERES ESTILIZADA */
         .leaderboard-table {
             width: 100%; 
             border-collapse: separate; 
-            border-spacing: 0;
-            background: #ffffff; 
-            border: 1px solid #e2e8f0;
-            border-radius: 8px; 
-            overflow: hidden; 
+            border-spacing: 0 6px;
             font-size: 0.95rem;
         }
-
+        
         .leaderboard-table th {
-            background-color: #f1f5f9; 
-            color: #475569; 
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 12px;
             font-weight: 700;
+        }
+        
+        .leaderboard-table th:first-child { border-radius: 8px 0 0 8px; }
+        .leaderboard-table th:last-child { border-radius: 0 8px 8px 0; }
+
+        .leaderboard-row td {
             padding: 12px 10px;
-            text-align: left;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
             border-bottom: 1px solid #e2e8f0;
         }
-
-        .leaderboard-table td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .leaderboard-table tr:last-child td {
-            border-bottom: none;
-        }
+        
+        .leaderboard-row td:first-child { border-left: 1px solid #e2e8f0; border-radius: 10px 0 0 10px; }
+        .leaderboard-row td:last-child { border-right: 1px solid #e2e8f0; border-radius: 0 10px 10px 0; }
     </style>
 </head>
 <body>
@@ -336,7 +358,7 @@
     <header>
         <div class="header-container">
             <div class="brand-layout">
-                <img src="logo.png" alt="Logo">
+                <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
                 <span>ProfeDiego</span>
             </div>
             <div class="title-layout">
@@ -349,23 +371,23 @@
     <div class="container">
         
         <div id="welcome-screen" class="card screen active">
-            <h2>¡Simulador Activo!</h2>
-            <p style="color: var(--text-muted); margin: -5px 0 15px 0;">Evalúa tus conocimientos técnicos.</p>
+            <h2>⚡ ¡Simulador Activo!</h2>
+            <p>Evalúa tus conocimientos en instrumentación y control de procesos.</p>
             
             <div class="details-box">
                 <strong>Condiciones de Evaluación:</strong>
                 <ul>
-                    <li><strong>20 preguntas aleatorias</strong> en cada intento.</li>
-                    <li>Las alternativas se barajan automáticamente.</li>
-                    <li>Escala: <strong>60% de exigencia (Nota 4.0)</strong>.</li>
-                    <li>¡Mucho éxito!</li>
+                    <li><strong>20 preguntas aleatorias</strong> extraídas del banco oficial.</li>
+                    <li>Las alternativas se barajan automáticamente en cada intento.</li>
+                    <li>Escala de evaluación: <strong>60% de exigencia (Nota 4.0)</strong>.</li>
+                    <li>¡Mucho éxito en tu preparación!</li>
                 </ul>
             </div>
 
             <input type="text" id="nombre-alumno" class="input-nombre" placeholder="Ingresa tu Nombre y Apellido para comenzar">
 
-            <div id="db-loader" style="text-align: center; color: var(--accent-color); font-weight: 600; margin-top: 15px; font-size: 0.95rem;">
-                Conectando con el servidor y descargando preguntas...
+            <div id="db-loader" style="text-align: center; color: #d97706; font-weight: bold; margin-top: 15px;">
+                🔄 Conectando con el servidor y descargando preguntas...
             </div>
 
             <button id="start-btn" class="btn" style="display:none;" onclick="startQuiz()">Iniciar Evaluación Aleatoria</button>
@@ -374,41 +396,41 @@
         <div id="quiz-screen" class="card screen">
             <div class="progress-bar"><div id="progress" class="progress"></div></div>
             <div>
-                <span id="question-counter" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Pregunta X de 20</span>
+                <span id="question-counter" style="font-size: 0.95rem; font-weight: 700; color: #64748b;">Pregunta X de 20</span>
                 <span id="timer" class="timer-txt">00:00</span>
             </div>
             <div style="clear:both;"></div>
             
-            <div style="margin-top: 15px;">
+            <div style="margin-top: 12px;">
                 <div id="topic-container" class="topic-tag">Tópico</div>
             </div>
             <div class="question-txt" id="question-text">Cargando pregunta...</div>
             <div class="options-list" id="options-container"></div>
             
             <div id="justification-container" class="justification-box">
-                <strong>Justificación Técnica:</strong> <span id="justification-text"></span>
+                <strong>📘 Justificación Técnica:</strong> <span id="justification-text"></span>
             </div>
             
-            <button id="next-btn" class="btn" style="display:none;" onclick="nextQuestion()">Avanzar Pregunta</button>
+            <button id="next-btn" class="btn" style="display:none;" onclick="nextQuestion()">Avanzar Pregunta 👉</button>
         </div>
 
         <div id="result-screen" class="card screen">
             <h2>Resumen del Intento</h2>
-            <div class="score-display" style="text-align: center; margin-bottom: 25px;">
-                <div style="font-size: 1.05rem; color: var(--text-muted); font-weight: 500;">Tu calificación final es:</div>
+            <div class="score-display">
+                <div style="font-size: 1.1rem; color: #475569; text-align: center; font-weight: 700;">Tu calificación final es:</div>
                 <div id="grade-output" class="grade-badge">1.0</div>
-                <div id="score-output" style="font-size: 1.2rem; font-weight: 700; color: var(--text-color);">Puntaje: 0 / 20 correctas</div>
-                <div id="time-output" style="font-size: 0.95rem; color: var(--text-muted); margin-top: 6px; font-weight: 500;">Tiempo total: 00:00</div>
-                <div id="feedback-message" style="margin-top: 20px; font-weight: 600; font-size: 1rem;">Guardando resultado en el servidor...</div>
+                <div id="score-output" style="font-size: 1.15rem; font-weight: 900; color: #1e293b; text-align: center;">Puntaje: 0 / 20 correctas</div>
+                <div id="time-output" style="font-size: 1rem; color: #64748b; margin-top: 6px; text-align: center; font-weight: 700;">Tiempo total: 00:00</div>
+                <div id="feedback-message" style="margin-top: 20px; font-weight: 900; font-size: 1.1rem; text-align: center;">Guardando resultado en el servidor...</div>
             </div>
 
             <div id="leaderboard-section" style="margin: 30px 0; display: none;">
-                <h3 style="text-align: center; color: var(--primary-color); margin-bottom: 16px; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.3px;">🏆 Tabla de Líderes (Top 10)</h3>
+                <h3 style="text-align: center; color: var(--primary-color); margin-bottom: 16px; font-size: 1.3rem; font-weight: 900;">🏆 Tabla de Líderes (Top 10)</h3>
                 <table class="leaderboard-table">
                     <thead>
                         <tr>
                             <th style="text-align: center; width: 15%;">Pos</th>
-                            <th style="width: 45%;">Nombre</th>
+                            <th style="text-align: left; width: 45%;">Nombre</th>
                             <th style="text-align: center; width: 15%;">Puntos</th>
                             <th style="text-align: center; width: 15%;">Nota</th>
                             <th style="text-align: center; width: 10%;">Tiempo</th>
@@ -417,7 +439,7 @@
                     <tbody id="leaderboard-body"></tbody>
                 </table>
             </div>
-            <button class="btn" onclick="goToWelcome()">Realizar un nuevo intento</button>
+            <button class="btn" onclick="goToWelcome()">🔄 Realizar un nuevo intento</button>
         </div>
     </div>
 
@@ -451,7 +473,7 @@
                 }
             } catch (error) {
                 console.error("Error:", error);
-                document.getElementById('db-loader').innerHTML = '<span style="color: var(--error-color);">Error: No se encontró el archivo "preguntas.csv". Asegúrate de subirlo a GitHub junto al index.html.</span>';
+                document.getElementById('db-loader').innerHTML = '<span style="color: #dc3545;">⚠️ Error: No se encontró el archivo "preguntas.csv". Asegúrate de subirlo a GitHub junto al index.html.</span>';
             }
         };
 
@@ -504,7 +526,7 @@
                         q: row[2] || '',
                         o: [row[3], row[4], row[5], row[6]].filter(Boolean),
                         a: row[idx],
-                        j: row[8] || 'Sin justificación.'
+                        j: row[8] || 'Sin justificación técnica disponible.'
                     });
                 }
             }
@@ -539,7 +561,6 @@
             if(nombre === "") {
                 alert("Por favor, ingresa tu Nombre y Apellido antes de comenzar.");
                 return;
-
             }
 
             score = 0;
@@ -642,7 +663,7 @@
             
             const feedbackMsg = document.getElementById('feedback-message');
             feedbackMsg.innerText = "Guardando resultado en el servidor...";
-            feedbackMsg.style.color = "var(--text-muted)";
+            feedbackMsg.style.color = "#475569";
 
             const notaConComa = finalGrade.toFixed(1).replace('.', ','); 
 
@@ -659,13 +680,14 @@
                 body: params.toString() 
             })
             .then(() => {
-                feedbackMsg.innerText = "¡Resultado enviado a la nube con éxito!";
+                feedbackMsg.innerText = "🚀 ¡Resultado enviado a la nube con éxito!";
                 feedbackMsg.style.color = "var(--success-color)";
+                
                 obtenerTablaLideres();
             })
             .catch(error => {
                 console.error('Error al guardar:', error);
-                feedbackMsg.innerText = "Error de conexión al guardar el resultado.";
+                feedbackMsg.innerText = "❌ Error de conexión al guardar el resultado.";
                 feedbackMsg.style.color = "var(--error-color)";
             });
         }
@@ -676,7 +698,7 @@
             document.getElementById('nombre-alumno').value = "";
         }
 
-        // --- SISTEMA DE LECTURA DE LÍDERES ---
+        // --- SISTEMA DE LECTURA DE LÍDERES DESDE EL EXCEL ---
         function obtenerTablaLideres() {
             const leaderboardSection = document.getElementById('leaderboard-section');
             const leaderboardBody = document.getElementById('leaderboard-body');
@@ -687,7 +709,7 @@
                 leaderboardBody.innerHTML = ""; 
                 
                 if (data.length === 0) {
-                    leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">No hay puntajes registrados aún.</td></tr>`;
+                    leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#64748b;">No hay puntajes registrados aún.</td></tr>`;
                 } else {
                     data.forEach((alumno, index) => {
                         let posicion = index + 1;
@@ -696,17 +718,17 @@
                         if (index === 2) posicion = "🥉";
 
                         const fila = document.createElement('tr');
-                        fila.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8fafc"; 
+                        fila.className = "leaderboard-row";
                         
                         const notaNumerica = parseFloat(String(alumno.nota).replace(',', '.'));
-                        const colorNota = notaNumerica >= 4.0 ? '#10b981' : '#ef4444';
+                        const colorNota = notaNumerica >= 4.0 ? '#16a34a' : '#dc2626';
 
                         fila.innerHTML = `
-                            <td style="padding: 12px 10px; text-align: center; font-weight: 700; color: var(--primary-color);">${posicion}</td>
-                            <td style="padding: 12px 10px; color: var(--text-color); font-weight: 600;">${alumno.nombre}</td>
-                            <td style="padding: 12px 10px; text-align: center; font-weight: 700; color: var(--accent-color);">${alumno.puntaje}</td>
-                            <td style="padding: 12px 10px; text-align: center; font-weight: 700; color: ${colorNota};">${alumno.nota}</td>
-                            <td style="padding: 12px 10px; text-align: center; color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">⏱️ ${alumno.tiempo}</td>
+                            <td style="text-align: center; font-weight: 900; font-size: 1.1rem;">${posicion}</td>
+                            <td style="color: #1e293b; font-weight: 700;">${alumno.nombre}</td>
+                            <td style="text-align: center; font-weight: 900; color: #2563eb;">${alumno.puntaje}</td>
+                            <td style="text-align: center; font-weight: 900; color: ${colorNota};">${alumno.nota}</td>
+                            <td style="text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 700;">⏱️ ${alumno.tiempo}</td>
                         `;
                         leaderboardBody.appendChild(fila);
                     });
