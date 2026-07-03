@@ -6,20 +6,26 @@
     <title>Examen Instrumentación Industrial 2026</title>
     <style>
         :root {
-            /* COLORES ORIGINALES */
+            /* COLORES INSTITUCIONALES MEJORADOS */
             --primary-color: #002b5c;
+            --primary-light: #003f88;
             --secondary-color: #f4b223;
-            --bg-color: #f7f9fc;
+            --secondary-hover: #e09e19;
+            --bg-color: #f0f4f8;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --success-color: #28a745;
-            --error-color: #dc3545;
+            --text-main: #2c3e50;
+            --text-muted: #64748b;
+            --success-color: #10b981;
+            --success-bg: #d1fae5;
+            --error-color: #ef4444;
+            --error-bg: #fee2e2;
+            --border-color: #e2e8f0;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
             display: flex;
@@ -28,43 +34,48 @@
             min-height: 100vh;
         }
 
-        /* ENCABEZADO */
+        /* ENCABEZADO INSTITUCIONAL */
         header {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
             color: white;
             width: 100%;
-            padding: 15px 0;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-bottom: 5px solid var(--secondary-color);
+            padding: 18px 0;
+            box-shadow: 0 4px 12px rgba(0, 43, 92, 0.15);
+            border-bottom: 4px solid var(--secondary-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-container {
-            max-width: 600px;
+            max-width: 650px;
             width: 90%;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
 
         .brand-layout {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .brand-layout img {
-            height: 38px;
+            height: 42px;
             width: auto;
             object-fit: contain;
-            border-radius: 4px;
+            background: white;
+            padding: 4px;
+            border-radius: 6px;
         }
 
         .brand-layout span {
-            font-weight: bold;
-            font-size: 1.15rem;
+            font-weight: 700;
+            font-size: 1.25rem;
             letter-spacing: 0.5px;
         }
 
@@ -72,254 +83,281 @@
             text-align: right;
         }
 
-        .title-layout h1 { margin: 0; font-size: 1.3rem; }
-        .title-layout p { margin: 3px 0 0 0; font-size: 0.85rem; opacity: 0.9; }
+        .title-layout h1 { margin: 0; font-size: 1.2rem; font-weight: 600; }
+        .title-layout p { margin: 4px 0 0 0; font-size: 0.85rem; color: #cbd5e1; }
 
-        /* CONTENEDOR PRINCIPAL SEMÁNTICO */
+        @media (max-width: 480px) {
+            .header-container { flex-direction: column; text-align: center; justify-content: center; }
+            .title-layout { text-align: center; }
+        }
+
+        /* CONTENEDOR Y TARJETAS */
         .container {
             width: 90%;
-            max-width: 600px;
-            margin: 20px 0;
+            max-width: 650px;
+            margin: 30px 0;
             flex-grow: 1;
         }
 
         .card {
             background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(149, 157, 165, 0.15);
+            padding: 32px;
             margin-bottom: 20px;
             box-sizing: border-box;
+            border: 1px solid var(--border-color);
         }
 
         .screen { display: none; }
-        .active { display: block !important; animation: fadeIn 0.4s ease; }
+        .active { display: block !important; animation: slideUp 0.4s ease-out forwards; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h2 { color: var(--primary-color); margin-top: 0; }
+        h2 { 
+            color: var(--primary-color); 
+            margin-top: 0; 
+            font-size: 1.6rem;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
 
         /* BOTONES */
         .btn {
-            background-color: var(--primary-color);
-            color: white;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
             border: none;
-            padding: 14px 25px;
-            font-size: 1rem;
-            border-radius: 8px;
+            padding: 16px 28px;
+            font-size: 1.05rem;
+            border-radius: 10px;
             cursor: pointer;
             width: 100%;
-            font-weight: bold;
-            transition: all 0.2s ease-in-out;
-            margin-top: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(244, 178, 35, 0.2);
         }
 
-        .btn:hover { background-color: #002244; transform: translateY(-1px); }
-        .btn:active { transform: translateY(1px); }
-        .btn:disabled { background-color: #cccccc; cursor: not-allowed; transform: none; }
+        .btn:hover:not(:disabled) { 
+            background-color: var(--secondary-hover); 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(244, 178, 35, 0.3);
+        }
         
-        #start-btn, #next-btn { display: none; }
+        .btn:disabled { 
+            background-color: #cbd5e1; 
+            color: #94a3b8;
+            cursor: not-allowed; 
+            box-shadow: none;
+        }
 
         /* BARRA DE PROGRESO */
         .progress-bar {
-            background-color: #e0e0e0;
-            border-radius: 10px;
-            height: 10px;
+            background-color: #e2e8f0;
+            border-radius: 12px;
+            height: 12px;
             width: 100%;
             margin-bottom: 20px;
             overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .progress {
-            background-color: var(--secondary-color);
+            background-color: var(--primary-color);
             height: 100%;
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
         }
 
-        /* METADATOS DE PREGUNTA (FLEXBOX EVITA FLOATS) */
-        .quiz-meta {
+        .quiz-header-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        #question-counter { font-size: 0.9rem; color: #666; }
-        .timer-txt { font-weight: bold; color: #555; }
-
-        .question-txt {
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            line-height: 1.4;
+        #question-counter { font-size: 0.95rem; color: var(--text-muted); font-weight: 600; }
+        .timer-txt { 
+            background: #f1f5f9;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700; 
+            color: var(--primary-color);
+            font-size: 0.95rem;
         }
 
+        /* PREGUNTAS Y OPCIONES */
         .topic-tag {
             display: inline-block;
-            background-color: #e2ecf5;
-            color: var(--primary-color);
-            padding: 4px 10px;
+            background-color: #e0f2fe;
+            color: #0284c7;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* OPCIONES */
+        .question-txt {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+
         .options-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .option-btn {
-            background-color: #f0f4f8;
-            border: 2px solid #d0dbe5;
-            padding: 12px;
+            background-color: #ffffff;
+            border: 2px solid var(--border-color);
+            padding: 16px;
             text-align: left;
-            border-radius: 8px;
-            font-size: 0.95rem;
+            border-radius: 10px;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-color);
+            transition: all 0.2s ease;
+            color: var(--text-main);
+            font-weight: 500;
+            position: relative;
         }
 
         .option-btn:hover:not(:disabled) {
-            background-color: #e2ecf5;
-            border-color: var(--primary-color);
+            background-color: #f8fafc;
+            border-color: var(--primary-light);
+            transform: translateX(4px);
         }
 
         .option-btn.correct {
-            background-color: #d4edda !important;
+            background-color: var(--success-bg) !important;
             border-color: var(--success-color) !important;
-            color: #155724;
-            font-weight: bold;
+            color: #065f46;
+            font-weight: 700;
         }
 
         .option-btn.incorrect {
-            background-color: #f8d7da !important;
+            background-color: var(--error-bg) !important;
             border-color: var(--error-color) !important;
-            color: #721c24;
+            color: #991b1b;
         }
 
-        /* RETROALIMENTACIÓN */
+        /* CAJA DE JUSTIFICACIÓN */
         .justification-box {
             display: none;
-            background-color: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-left: 5px solid var(--success-color);
-            padding: 15px;
-            margin-top: 15px;
-            border-radius: 4px;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-left: 6px solid var(--primary-light);
+            padding: 18px;
+            margin-top: 24px;
+            border-radius: 8px;
             font-size: 0.95rem;
-            animation: fadeIn 0.4s ease;
+            line-height: 1.5;
+            animation: slideUp 0.4s ease;
         }
 
-        /* RESULTADOS Y CALIFICACIÓN */
-        .grade-badge {
-            font-size: 3.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin: 10px 0;
+        /* RESULTADOS Y TABLA */
+        .score-display {
             text-align: center;
+            padding: 20px 0;
+        }
+
+        .grade-badge {
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
         }
         
         .grade-badge.reprobo { color: var(--error-color); }
         .grade-badge.aprobo { color: var(--success-color); }
 
         .details-box {
-            background-color: #f8f9fa;
-            border-left: 5px solid var(--primary-color);
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 0 8px 8px 0;
+            background-color: #f8fafc;
+            border-left: 5px solid var(--secondary-color);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
             font-size: 0.95rem;
+            line-height: 1.6;
         }
 
-        /* INPUTS */
+        .details-box ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+            color: var(--text-muted);
+        }
+
         .input-nombre {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1.05rem;
             margin-bottom: 10px;
             box-sizing: border-box;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.3s;
+            background-color: #f8fafc;
         }
 
         .input-nombre:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 43, 92, 0.1);
+            background-color: #fff;
             outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 43, 92, 0.1);
         }
 
-        /* EFECTO PULSE PARA EL LOADER */
-        .db-loader-text {
+        /* ESTILOS DE LA TABLA DE LÍDERES */
+        #leaderboard-section h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-bottom: 16px;
             text-align: center;
-            color: var(--secondary-color);
-            font-weight: bold;
-            margin-top: 15px;
-            animation: pulseText 1.5s infinite ease-in-out;
         }
 
-        @keyframes pulseText {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
-        /* TABLA DE POSICIONES OPTIMIZADA Y RESPONSIVA */
-        .leaderboard-container {
-            margin: 25px 0;
-            display: none;
-        }
-
-        .leaderboard-h3 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 12px;
-            font-size: 1.2rem;
-        }
-
-        .table-responsive {
+        table {
             width: 100%;
-            overflow-x: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .leaderboard-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #fdfdfd;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
             font-size: 0.95rem;
-            white-space: nowrap; /* Evita que los nombres se rompan feo en pantallas chicas */
+            border: 1px solid var(--border-color);
         }
 
-        .leaderboard-table thead tr {
-            background-color: #34495e;
+        th {
+            background-color: var(--primary-color);
             color: white;
-            text-align: left;
+            padding: 14px 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
         }
 
-        .leaderboard-table th, .leaderboard-table td {
-            padding: 12px 10px;
+        td {
+            padding: 14px 10px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 480px) {
-            .header-container {
-                flex-direction: column;
-                text-align: center;
-            }
-            .title-layout {
-                text-align: center;
-            }
+        tr:last-child td { border-bottom: none; }
+        
+        #leaderboard-body tr:hover {
+            background-color: #f8fafc !important;
         }
     </style>
 </head>
@@ -328,7 +366,7 @@
     <header>
         <div class="header-container">
             <div class="brand-layout">
-                <img src="logo.png" alt="Logo">
+                <img src="logo.png" alt="Logo Institucional">
                 <span>ProfeDiego</span>
             </div>
             <div class="title-layout">
@@ -338,37 +376,37 @@
         </div>
     </header>
 
-    <main class="container">
+    <div class="container">
         
         <div id="welcome-screen" class="card screen active">
             <h2>¡Simulador Activo!</h2>
-            <p>Evalúa tus conocimientos.</p>
+            <p style="color: var(--text-muted); font-size: 1.05rem; margin-top: -10px;">Evalúa tus conocimientos y prepárate para el examen.</p>
             
             <div class="details-box">
-                <strong>Condiciones de Evaluación:</strong>
+                <strong style="color: var(--primary-color); display: block; margin-bottom: 8px;">Condiciones de Evaluación:</strong>
                 <ul>
                     <li><strong>20 preguntas aleatorias</strong> en cada intento.</li>
                     <li>Las alternativas se barajan automáticamente.</li>
                     <li>Escala: <strong>60% de exigencia (Nota 4.0)</strong>.</li>
-                    <li>Suerte!!!</li>
+                    <li>¡Mucho éxito!</li>
                 </ul>
             </div>
 
-            <input type="text" id="nombre-alumno" class="input-nombre" placeholder="Ingresa tu Nombre y Apellido para comenzar">
+            <input type="text" id="nombre-alumno" class="input-nombre" placeholder="Ingresa tu Nombre y Apellido">
 
-            <div id="db-loader" class="db-loader-text">
-                Conectando con el servidor y descargando preguntas...
+            <div id="db-loader" style="text-align: center; color: var(--primary-color); font-weight: 600; margin-top: 20px; padding: 15px; background: #e0f2fe; border-radius: 8px;">
+                <span style="display:inline-block; animation: pulse 1.5s infinite;">⏳ Conectando con el servidor y descargando preguntas...</span>
             </div>
 
-            <button id="start-btn" class="btn" onclick="startQuiz()">Iniciar Evaluación Aleatoria</button>
+            <button id="start-btn" class="btn" style="display:none;" onclick="startQuiz()">Iniciar Evaluación</button>
         </div>
 
         <div id="quiz-screen" class="card screen">
             <div class="progress-bar"><div id="progress" class="progress"></div></div>
             
-            <div class="quiz-meta">
+            <div class="quiz-header-info">
                 <span id="question-counter">Pregunta X de 20</span>
-                <span id="timer" class="timer-txt">00:00</span>
+                <span id="timer" class="timer-txt">⏱️ 00:00</span>
             </div>
             
             <div id="topic-container" class="topic-tag">Tópico</div>
@@ -376,42 +414,43 @@
             <div class="options-list" id="options-container"></div>
             
             <div id="justification-container" class="justification-box">
-                <strong>Justificación Técnico-Pedagógica:</strong> <span id="justification-text"></span>
+                <strong style="color: var(--primary-color);">💡 Justificación Técnica:</strong> <br><span id="justification-text" style="display: block; margin-top: 8px;"></span>
             </div>
             
-            <button id="next-btn" class="btn" onclick="nextQuestion()">Avanzar Pregunta</button>
+            <button id="next-btn" class="btn" style="display:none;" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
         </div>
 
         <div id="result-screen" class="card screen">
             <h2>Resumen del Intento</h2>
             <div class="score-display">
-                <div style="font-size: 1.1rem; color: #555; text-align: center;">Tu calificación final es:</div>
+                <div style="font-size: 1.1rem; color: var(--text-muted); font-weight: 600;">Tu calificación final es:</div>
                 <div id="grade-output" class="grade-badge">1.0</div>
-                <div id="score-output" style="font-size: 1.1rem; font-weight: bold; color: #333; text-align: center;">Puntaje: 0 / 20 correctas</div>
-                <div id="time-output" style="font-size: 0.95rem; color: #666; margin-top: 5px; text-align: center;">Tiempo total: 00:00</div>
-                <div id="feedback-message" style="margin-top: 15px; font-weight: bold; font-size: 1rem; text-align: center;">Guardando resultado en el servidor...</div>
+                <div id="score-output" style="font-size: 1.2rem; font-weight: 700; color: var(--text-main);">Puntaje: 0 / 20 correctas</div>
+                <div id="time-output" style="font-size: 1rem; color: var(--text-muted); margin-top: 8px;">Tiempo total: 00:00</div>
+                
+                <div id="feedback-message" style="margin-top: 20px; font-weight: 600; font-size: 1.05rem; padding: 10px; border-radius: 8px; background: #f1f5f9;">
+                    Guardando resultado en el servidor...
+                </div>
             </div>
 
-            <div id="leaderboard-section" class="leaderboard-container">
-                <h3 class="leaderboard-h3">🏆 Tabla de Líderes (Top 10)</h3>
-                <div class="table-responsive">
-                    <table class="leaderboard-table">
-                        <thead>
-                            <tr>
-                                <th style="text-align: center; width: 15%;">Pos</th>
-                                <th style="width: 45%;">Nombre</th>
-                                <th style="text-align: center; width: 15%;">Puntos</th>
-                                <th style="text-align: center; width: 15%;">Nota</th>
-                                <th style="text-align: center; width: 10%;">Tiempo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leaderboard-body"></tbody>
-                    </table>
-                </div>
+            <div id="leaderboard-section" style="margin: 30px 0; display: none;">
+                <h3>🏆 Tabla de Líderes (Top 10)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: center; width: 12%;">Pos</th>
+                            <th style="text-align: left; width: 45%;">Nombre</th>
+                            <th style="text-align: center; width: 15%;">Puntos</th>
+                            <th style="text-align: center; width: 15%;">Nota</th>
+                            <th style="text-align: center; width: 13%;">Tiempo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
             </div>
             <button class="btn" onclick="goToWelcome()">Realizar un nuevo intento</button>
         </div>
-    </main>
+    </div>
 
     <script>
         // --- VARIABLES GLOBALES ---
@@ -443,7 +482,7 @@
                 }
             } catch (error) {
                 console.error("Error:", error);
-                document.getElementById('db-loader').innerHTML = '<span style="color: red;">Error: No se encontró el archivo "preguntas.csv". Asegúrate de subirlo a GitHub junto al index.html.</span>';
+                document.getElementById('db-loader').innerHTML = '<span style="color: var(--error-color);">❌ Error: No se encontró el archivo "preguntas.csv". Asegúrate de subirlo a GitHub junto al index.html.</span>';
             }
         };
 
@@ -480,7 +519,6 @@
             return result;
         }
 
-        // Se procesa la fila mapeando las columnas correctas
         function processRow(row, resultList) {
             if (row.length >= 8 && row[0] !== "Número de Pregunta" && row[0] !== "0" && row[0] !== "") {
                 let ansLetter = row[7] ? row[7].trim().toUpperCase() : '';
@@ -520,10 +558,10 @@
 
         function startTimer() {
             totalSeconds = 0;
-            document.getElementById('timer').innerText = "00:00";
+            document.getElementById('timer').innerText = "⏱️ 00:00";
             timerInterval = setInterval(() => {
                 totalSeconds++;
-                document.getElementById('timer').innerText = formatTime(totalSeconds);
+                document.getElementById('timer').innerText = "⏱️ " + formatTime(totalSeconds);
             }, 1000);
         }
 
@@ -633,10 +671,10 @@
             document.getElementById('time-output').innerText = `Tiempo total: ${timeString}`;
             
             const feedbackMsg = document.getElementById('feedback-message');
-            feedbackMsg.innerText = "Guardando resultado en el servidor...";
-            feedbackMsg.style.color = "#555";
+            feedbackMsg.innerText = "☁️ Guardando resultado en el servidor...";
+            feedbackMsg.style.color = "var(--text-muted)";
+            feedbackMsg.style.background = "#f1f5f9";
 
-            // Truco de coma decimal para forzar compatibilidad regional con Sheets en Español
             const notaConComa = finalGrade.toFixed(1).replace('.', ','); 
 
             const params = new URLSearchParams();
@@ -652,16 +690,17 @@
                 body: params.toString() 
             })
             .then(() => {
-                feedbackMsg.innerText = "¡Resultado enviado a la nube con éxito!";
-                feedbackMsg.style.color = "var(--success-color)";
+                feedbackMsg.innerText = "✅ ¡Resultado enviado a la nube con éxito!";
+                feedbackMsg.style.color = "#065f46";
+                feedbackMsg.style.background = "var(--success-bg)";
                 
-                // Dispara automáticamente la lectura del Top 10 actualizado
                 obtenerTablaLideres();
             })
             .catch(error => {
                 console.error('Error al guardar:', error);
-                feedbackMsg.innerText = "Error de conexión al guardar el resultado.";
-                feedbackMsg.style.color = "var(--error-color)";
+                feedbackMsg.innerText = "❌ Error de conexión al guardar el resultado.";
+                feedbackMsg.style.color = "#991b1b";
+                feedbackMsg.style.background = "var(--error-bg)";
             });
         }
 
@@ -682,7 +721,7 @@
                 leaderboardBody.innerHTML = ""; 
                 
                 if (data.length === 0) {
-                    leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">No hay puntajes registrados aún.</td></tr>`;
+                    leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">No hay puntajes registrados aún.</td></tr>`;
                 } else {
                     data.forEach((alumno, index) => {
                         let posicion = index + 1;
@@ -691,19 +730,15 @@
                         if (index === 2) posicion = "🥉";
 
                         const fila = document.createElement('tr');
-                        fila.style.borderBottom = "1px solid #eef2f3";
-                        fila.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f9fa"; 
-                        
-                        // Convertimos la nota de texto ("4,0") a número válido para JavaScript ("4.0") antes de comparar el color
                         const notaNumerica = parseFloat(String(alumno.nota).replace(',', '.'));
-                        const colorNota = notaNumerica >= 4.0 ? '#27ae60' : '#c0392b';
+                        const colorNota = notaNumerica >= 4.0 ? 'var(--success-color)' : 'var(--error-color)';
 
                         fila.innerHTML = `
-                            <td style="padding: 10px; text-align: center; font-weight: bold;">${posicion}</td>
-                            <td style="padding: 10px; color: #333; font-weight: 500;">${alumno.nombre}</td>
-                            <td style="padding: 10px; text-align: center; font-weight: bold; color: #2980b9;">${alumno.puntaje}</td>
-                            <td style="padding: 10px; text-align: center; font-weight: bold; color: ${colorNota};">${alumno.nota}</td>
-                            <td style="padding: 10px; text-align: center; color: #7f8c8d; font-size: 0.85rem; font-weight: bold;">⏱️ ${alumno.tiempo}</td>
+                            <td style="text-align: center; font-weight: 700; font-size: 1.1rem;">${posicion}</td>
+                            <td style="color: var(--text-main); font-weight: 600;">${alumno.nombre}</td>
+                            <td style="text-align: center; font-weight: 700; color: #0284c7;">${alumno.puntaje}</td>
+                            <td style="text-align: center; font-weight: 800; color: ${colorNota};">${alumno.nota}</td>
+                            <td style="text-align: center; color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">${alumno.tiempo}</td>
                         `;
                         leaderboardBody.appendChild(fila);
                     });
