@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redireccionando al Simulador...</title>
+    <script>
+        // Captura la URL que escribió el alumno
+        var currentUrl = window.location.href;
+        
+        // Verifica si la escribieron en minúsculas (o con algún error de mayúsculas)
+        if (currentUrl.includes("/instind2026") || currentUrl.includes("/Instind2026") || currentUrl.includes("/instInd2026")) {
+            // Reemplaza la versión mal escrita por la URL correcta con mayúsculas precisas
+            var correctUrl = currentUrl.replace(/\/instind2026/i, "/InstInd2026");
+            window.location.replace(correctUrl);
+        } else {
+            // Mensaje de respaldo si el error es por otra razón (ej. escribieron mal otra parte del enlace)
+            document.write("<div style='text-align:center; margin-top:50px; font-family:sans-serif;'>");
+            document.write("<h1>Examen Instrumentación Industrial 2026</h1>");
+            document.write("<p>No pudimos encontrar la página exacta que buscas.</p>");
+            document.write("<p><a href='https://github.io' style='color:#007bff; text-decoration:none; font-weight:bold;'>Haz clic aquí para ir al Simulador Oficial</a></p>");
+            document.write("</div>");
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>
