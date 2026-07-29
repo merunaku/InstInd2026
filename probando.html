@@ -8,208 +8,15 @@
     <!-- Fuentes Google -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap" rel="stylesheet">
     
-    <!-- ESTILOS GLOBALES CENTRALIADOS -->
+    <!-- ESTILOS GLOBALES CENTRALIZADOS -->
     <link rel="stylesheet" href="https://merunaku.github.io/home/styles.css">
-
-    <style>
-        /* ==========================================================================
-           ESTILOS EXCLUSIVOS DEL COMPONENTE DE EVALUACIÓN
-           ========================================================================== */
-
-        .screen { display: none; }
-        .active { 
-            display: block !important; 
-            animation: cardEntrance 0.35s ease-in-out; 
-        }
-
-        @keyframes cardEntrance {
-            from { opacity: 0; transform: translateY(12px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Barra de progreso y metadatos */
-        .progress-bar {
-            background-color: #e2e8f0;
-            border-radius: 50px;
-            height: 10px;
-            width: 100%;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .progress {
-            background: linear-gradient(90deg, var(--secondary-color, #f59e0b), var(--success-color, #10b981));
-            height: 100%;
-            width: 0%;
-            transition: width 0.4s ease;
-            border-radius: 50px;
-        }
-
-        .timer-txt { 
-            font-weight: 900; 
-            color: #64748b; 
-            float: right; 
-            font-size: 1.05rem; 
-        }
-
-        .topic-tag {
-            display: inline-block;
-            background-color: #e0f2fe;
-            color: #0369a1;
-            padding: 5px 14px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .question-txt {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 20px;
-            line-height: 1.5;
-            text-align: left;
-        }
-
-        /* Opciones de respuesta */
-        .options-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .option-btn {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            padding: 14px 18px;
-            text-align: left;
-            border-radius: 14px;
-            font-size: 1rem;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--text-color, #2c3e50);
-            line-height: 1.4;
-        }
-
-        .option-btn:hover:not(:disabled) {
-            background: #ffffff;
-            border-color: var(--primary-color, #002b5c);
-            transform: translateX(4px);
-        }
-
-        .option-btn.correct {
-            background: #dcfce7 !important;
-            border-color: #22c55e !important;
-            color: #15803d !important;
-        }
-
-        .option-btn.incorrect {
-            background: #fee2e2 !important;
-            border-color: #ef4444 !important;
-            color: #b91c1c !important;
-        }
-
-        /* Retroalimentación técnica */
-        .justification-box {
-            display: none;
-            background-color: #f0fdf4;
-            border: 2px solid #bbf7d0;
-            border-left: 6px solid #22c55e;
-            padding: 18px;
-            margin-top: 20px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #166534;
-            text-align: left;
-        }
-
-        /* Insignia de nota final */
-        .grade-badge {
-            font-size: 4rem;
-            font-weight: 900;
-            color: var(--primary-color, #002b5c);
-            margin: 15px 0;
-            text-align: center;
-        }
-        
-        .grade-badge.reprobo { color: #dc2626; }
-        .grade-badge.aprobo { color: #16a34a; }
-
-        .details-box {
-            background-color: #f8fafc;
-            border-left: 6px solid var(--primary-color, #002b5c);
-            padding: 18px;
-            margin: 20px 0;
-            border-radius: 4px 16px 16px 4px;
-            font-size: 0.95rem;
-            color: #475569;
-            line-height: 1.6;
-            text-align: left;
-        }
-
-        .details-box ul { margin: 6px 0 0 0; padding-left: 20px; }
-
-        .input-nombre {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid #cbd5e1;
-            border-radius: 14px;
-            font-size: 1rem;
-            font-family: inherit;
-            font-weight: 700;
-            margin-bottom: 12px;
-            box-sizing: border-box;
-            background-color: #f8fafc;
-            text-align: center;
-        }
-
-        .input-nombre:focus {
-            border-color: var(--primary-color, #002b5c);
-            background-color: #ffffff;
-            outline: none;
-        }
-
-        /* Tabla de posiciones */
-        .leaderboard-table {
-            width: 100%; 
-            border-collapse: separate; 
-            border-spacing: 0 6px;
-            font-size: 0.95rem;
-        }
-        
-        .leaderboard-table th {
-            background-color: #1e293b;
-            color: #f8fafc;
-            padding: 12px;
-            font-weight: 700;
-        }
-        
-        .leaderboard-table th:first-child { border-radius: 8px 0 0 8px; }
-        .leaderboard-table th:last-child { border-radius: 0 8px 8px 0; }
-
-        .leaderboard-row td {
-            padding: 12px 10px;
-            background: #f8fafc;
-            border-top: 1px solid #e2e8f0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .leaderboard-row td:first-child { border-left: 1px solid #e2e8f0; border-radius: 10px 0 0 10px; }
-        .leaderboard-row td:last-child { border-right: 1px solid #e2e8f0; border-radius: 0 10px 10px 0; }
-    </style>
 </head>
 <body>
 
     <!-- CABECERA GLOBAL DINÁMICA -->
     <div id="global-header"></div>
 
-    <!-- SCRIPTS CONFIGURACIÓN Y NAVEGACIÓN GLOBAL -->
+    <!-- CONFIGURACIÓN Y NAVEGACIÓN GLOBAL -->
     <script src="https://merunaku.github.io/home/config.js"></script>
     <script src="https://merunaku.github.io/home/header.js"></script>
 
@@ -219,14 +26,14 @@
             <!-- PANTALLA 1: BIENVENIDA Y REGISTRO -->
             <div id="welcome-screen" class="screen active">
                 <h2>⚡ ¡Simulador Activo!</h2>
-                <p style="color: #64748b; font-weight: 700;">Evalúa tus conocimientos en la materia.</p>
+                <p style="color: #64748b; font-weight: 700; margin-bottom: 15px;">Evalúa tus conocimientos en la materia.</p>
                 
                 <div class="details-box">
                     <strong>Condiciones de Evaluación:</strong>
                     <ul>
                         <li><strong id="desc-cant-preguntas">20 preguntas aleatorias</strong> extraídas del banco oficial.</li>
                         <li>Las alternativas se barajan automáticamente en cada intento.</li>
-                        <li>Escala de evaluación: <strong>60% de exigencia (Nota 4.0)</strong>.</li>
+                        <li>Escala de evaluación: <strong id="desc-exigencia">60% de exigencia (Nota 4.0)</strong>.</li>
                         <li>¡Mucho éxito en tu preparación!</li>
                     </ul>
                 </div>
@@ -275,7 +82,7 @@
                 </div>
 
                 <div id="leaderboard-section" style="margin: 30px 0; display: none;">
-                    <h3 style="text-align: center; color: var(--primary-color, #002b5c); margin-bottom: 16px; font-size: 1.3rem; font-weight: 900;">🏆 Tabla de Líderes</h3>
+                    <h3 style="text-align: center; color: var(--primary-color); margin-bottom: 16px; font-size: 1.3rem; font-weight: 900;">🏆 Tabla de Líderes</h3>
                     <table class="leaderboard-table">
                         <thead>
                             <tr>
@@ -302,12 +109,12 @@
     </main>
 
     <script>
-        // CONFIGURACIÓN DINÁMICA (Centralizada mediante APP_CONFIG o valores por defecto)
+        // LECTURA DINÁMICA DE CONFIG.JS
         const QUIZ_CONFIG = {
-            TOTAL_PREGUNTAS: (window.APP_CONFIG && window.APP_CONFIG.TOTAL_PREGUNTAS) || 20,
-            EXIGENCIA_PORCENTAJE: (window.APP_CONFIG && window.APP_CONFIG.EXIGENCIA) || 0.60,
-            CSV_URL: (window.APP_CONFIG && window.APP_CONFIG.CSV_URL) || 'preguntas.csv',
-            WEB_APP_URL: (window.APP_CONFIG && window.APP_CONFIG.WEB_APP_URL) || "https://script.google.com/macros/s/AKfycbxfAYkuxXaXYLOuuJvC6IKO4NujyVM3X-NrVRa9sQJomJsT8HQ9NRNZawLoxVaD38jb/exec"
+            TOTAL_PREGUNTAS: (typeof CONFIG !== 'undefined' && CONFIG.TOTAL_PREGUNTAS) || 20,
+            EXIGENCIA_PORCENTAJE: (typeof CONFIG !== 'undefined' && CONFIG.EXIGENCIA_MINIMA) || 0.60,
+            CSV_URL: (typeof CONFIG !== 'undefined' && CONFIG.REPOSITORIO_CSV && CONFIG.REPOSITORIO_CSV.INSTRUMENTACION) || 'preguntasinstind.csv',
+            WEB_APP_URL: (typeof CONFIG !== 'undefined' && CONFIG.APIS && CONFIG.APIS.INSTRUMENTACION) || ''
         };
 
         let allQuestions = [];
@@ -317,10 +124,9 @@
         let timerInterval = null;
         let totalSeconds = 0;
 
-        // INICIALIZACIÓN
         window.onload = async () => {
-            // Actualizar interfaz con variables dinámicas
             document.getElementById('desc-cant-preguntas').innerText = `${QUIZ_CONFIG.TOTAL_PREGUNTAS} preguntas aleatorias`;
+            document.getElementById('desc-exigencia').innerText = `${Math.round(QUIZ_CONFIG.EXIGENCIA_PORCENTAJE * 100)}% de exigencia (Nota 4.0)`;
             await cargarBancoPreguntas();
         };
 
@@ -336,15 +142,14 @@
                     document.getElementById('db-loader').style.display = 'none';
                     document.getElementById('start-btn').style.display = 'block';
                 } else {
-                    throw new Error("El archivo está vacío o mal formateado");
+                    throw new Error("El archivo CSV está vacío o desestructurado");
                 }
             } catch (error) {
                 console.error("Error al cargar banco:", error);
-                document.getElementById('db-loader').innerHTML = '<span style="color: #dc2626;">⚠️ Error: No se encontró el banco de preguntas o no se pudo cargar.</span>';
+                document.getElementById('db-loader').innerHTML = '<span style="color: var(--error-color);">⚠️ Error: No se encontró el banco de preguntas o no se pudo cargar.</span>';
             }
         }
 
-        // PARSER DE CSV
         function parseCSVData(text) {
             let result = [];
             let row = [];
@@ -395,7 +200,6 @@
             }
         }
 
-        // LÓGICA DE JUEGO
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -484,7 +288,7 @@
 
             document.getElementById('justification-text').innerText = justification;
             document.getElementById('justification-container').style.display = 'block';
-            document.getElementById('next-btn').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'inline-block';
         }
 
         function nextQuestion() {
@@ -496,7 +300,6 @@
             }
         }
 
-        // CÁLCULO DE NOTAS Y PERSISTENCIA
         function calculateGrade(score, total) {
             const percentage = score / total;
             let grade = 1.0;
@@ -550,13 +353,13 @@
             })
             .then(() => {
                 feedbackMsg.innerText = "🚀 ¡Resultado enviado a la nube con éxito!";
-                feedbackMsg.style.color = "#16a34a";
+                feedbackMsg.style.color = "var(--success-color)";
                 obtenerTablaLideres();
             })
             .catch(error => {
                 console.error('Error al guardar:', error);
                 feedbackMsg.innerText = "❌ Error de conexión al guardar el resultado.";
-                feedbackMsg.style.color = "#dc2626";
+                feedbackMsg.style.color = "var(--error-color)";
             });
         }
 
@@ -566,7 +369,6 @@
             document.getElementById('nombre-alumno').value = "";
         }
 
-        // TABLA DE POSICIONES
         function obtenerTablaLideres() {
             const leaderboardSection = document.getElementById('leaderboard-section');
             const leaderboardBody = document.getElementById('leaderboard-body');
@@ -591,7 +393,7 @@
                         fila.className = "leaderboard-row";
                         
                         const notaNumerica = parseFloat(String(alumno.nota).replace(',', '.'));
-                        const colorNota = notaNumerica >= 4.0 ? '#16a34a' : '#dc2626';
+                        const colorNota = notaNumerica >= 4.0 ? 'var(--success-color)' : 'var(--error-color)';
 
                         fila.innerHTML = `
                             <td style="text-align: center; font-weight: 900; font-size: 1.1rem;">${posicion}</td>
