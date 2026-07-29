@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen Instrumentación Industrial 2026</title>
+    
+    <!-- Fuentes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- ESTILOS GLOBALES CENTRALIADOS -->
+    <link rel="stylesheet" href="https://merunaku.github.io/home/styles.css">
+
+    <style>
+        /* ==========================================================================
+           ESTILOS EXCLUSIVOS DEL COMPONENTE DE EVALUACIÓN
+           ========================================================================== */
+
+        .screen { display: none; }
+        .active { 
+            display: block !important; 
+            animation: cardEntrance 0.35s ease-in-out; 
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Barra de progreso y metadatos */
+        .progress-bar {
+            background-color: #e2e8f0;
+            border-radius: 50px;
+            height: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            background: linear-gradient(90deg, var(--secondary-color, #f59e0b), var(--success-color, #10b981));
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 50px;
+        }
+
+        .timer-txt { 
+            font-weight: 900; 
+            color: #64748b; 
+            float: right; 
+            font-size: 1.05rem; 
+        }
+
+        .topic-tag {
+            display: inline-block;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-txt {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        /* Opciones de respuesta */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 14px 18px;
+            text-align: left;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-color, #2c3e50);
+            line-height: 1.4;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: #ffffff;
+            border-color: var(--primary-color, #002b5c);
+            transform: translateX(4px);
+        }
+
+        .option-btn.correct {
+            background: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+        }
+
+        .option-btn.incorrect {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+        }
+
+        /* Retroalimentación técnica */
+        .justification-box {
+            display: none;
+            background-color: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            border-left: 6px solid #22c55e;
+            padding: 18px;
+            margin-top: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #166534;
+            text-align: left;
+        }
+
+        /* Insignia de nota final */
+        .grade-badge {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--primary-color, #002b5c);
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .grade-badge.reprobo { color: #dc2626; }
+        .grade-badge.aprobo { color: #16a34a; }
+
+        .details-box {
+            background-color: #f8fafc;
+            border-left: 6px solid var(--primary-color, #002b5c);
+            padding: 18px;
+            margin: 20px 0;
+            border-radius: 4px 16px 16px 4px;
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .details-box ul { margin: 6px 0 0 0; padding-left: 20px; }
+
+        .input-nombre {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 700;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            background-color: #f8fafc;
+            text-align: center;
+        }
+
+        .input-nombre:focus {
+            border-color: var(--primary-color, #002b5c);
+            background-color: #ffffff;
+            outline: none;
+        }
+
+        /* Tabla de posiciones */
+        .leaderboard-table {
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0 6px;
+            font-size: 0.95rem;
+        }
+        
+        .leaderboard-table th {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 12px;
+            font-weight: 700;
+        }
+        
+        .leaderboard-table th:first-child { border-radius: 8px 0 0 8px; }
+        .leaderboard-table th:last-child { border-radius: 0 8px 8px 0; }
+
+        .leaderboard-row td {
+            padding: 12px 10px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .leaderboard-row td:first-child { border-left: 1px solid #e2e8f0; border-radius: 10px 0 0 10px; }
+        .leaderboard-row td:last-child { border-right: 1px solid #e2e8f0; border-radius: 0 10px 10px 0; }
+    </style>
+</head>
+<body>
+
+    <!-- CABECERA GLOBAL DINÁMICA -->
+    <div id="global-header"></div>
+
+    <!-- SCRIPTS CONFIGURACIÓN Y NAVEGACIÓN GLOBAL -->
+    <script src="https://merunaku.github.io/home/config.js"></script>
+    <script src="https://merunaku.github.io/home/header.js"></script>
+
+    <main class="container">
+        <div class="card">
+            
+            <!-- PANTALLA 1: BIENVENIDA Y REGISTRO -->
+            <div id="welcome-screen" class="screen active">
+                <h2>⚡ ¡Simulador Activo!</h2>
+                <p style="color: #64748b; font-weight: 700;">Evalúa tus conocimientos en la materia.</p>
+                
+                <div class="details-box">
+                    <strong>Condiciones de Evaluación:</strong>
+                    <ul>
+                        <li><strong id="desc-cant-preguntas">20 preguntas aleatorias</strong> extraídas del banco oficial.</li>
+                        <li>Las alternativas se barajan automáticamente en cada intento.</li>
+                        <li>Escala de evaluación: <strong>60% de exigencia (Nota 4.0)</strong>.</li>
+                        <li>¡Mucho éxito en tu preparación!</li>
+                    </ul>
+                </div>
+
+                <input type="text" id="nombre-alumno" class="input-nombre" placeholder="Ingresa tu Nombre y Apellido para comenzar">
+
+                <div id="db-loader" style="text-align: center; color: #d97706; font-weight: bold; margin-top: 15px;">
+                    🔄 Conectando con el servidor y descargando preguntas...
+                </div>
+
+                <button id="start-btn" class="btn" style="display:none;" onclick="startQuiz()">Iniciar Evaluación Aleatoria</button>
+            </div>
+
+            <!-- PANTALLA 2: EVALUACIÓN EN CURSO -->
+            <div id="quiz-screen" class="screen">
+                <div class="progress-bar"><div id="progress" class="progress"></div></div>
+                <div>
+                    <span id="question-counter" style="font-size: 0.95rem; font-weight: 700; color: #64748b;">Pregunta 1</span>
+                    <span id="timer" class="timer-txt">⏱️ 00:00</span>
+                </div>
+                <div style="clear:both;"></div>
+                
+                <div style="margin-top: 12px; text-align: left;">
+                    <div id="topic-container" class="topic-tag">Tópico</div>
+                </div>
+
+                <div class="question-txt" id="question-text">Cargando pregunta...</div>
+                <div class="options-list" id="options-container"></div>
+                
+                <div id="justification-container" class="justification-box">
+                    <strong>📘 Justificación Técnica:</strong> <span id="justification-text"></span>
+                </div>
+                
+                <button id="next-btn" class="btn" style="display:none;" onclick="nextQuestion()">Avanzar Pregunta 👉</button>
+            </div>
+
+            <!-- PANTALLA 3: RESULTADOS -->
+            <div id="result-screen" class="screen">
+                <h2>Resumen del Intento</h2>
+                <div class="score-display">
+                    <div style="font-size: 1.1rem; color: #475569; text-align: center; font-weight: 700;">Tu calificación final es:</div>
+                    <div id="grade-output" class="grade-badge">1.0</div>
+                    <div id="score-output" style="font-size: 1.15rem; font-weight: 900; color: #1e293b; text-align: center;">Puntaje: 0 correctas</div>
+                    <div id="time-output" style="font-size: 1rem; color: #64748b; margin-top: 6px; text-align: center; font-weight: 700;">Tiempo total: 00:00</div>
+                    <div id="feedback-message" style="margin-top: 20px; font-weight: 900; font-size: 1.1rem; text-align: center;">Guardando resultado en el servidor...</div>
+                </div>
+
+                <div id="leaderboard-section" style="margin: 30px 0; display: none;">
+                    <h3 style="text-align: center; color: var(--primary-color, #002b5c); margin-bottom: 16px; font-size: 1.3rem; font-weight: 900;">🏆 Tabla de Líderes</h3>
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; width: 15%;">Pos</th>
+                                <th style="text-align: left; width: 45%;">Nombre</th>
+                                <th style="text-align: center; width: 15%;">Puntos</th>
+                                <th style="text-align: center; width: 15%;">Nota</th>
+                                <th style="text-align: center; width: 10%;">Tiempo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body"></tbody>
+                    </table>
+                </div>
+
+                <button class="btn" onclick="goToWelcome()">🔄 Realizar un nuevo intento</button>
+            </div>
+
+            <!-- RETORNO AL PORTAL -->
+            <a href="https://merunaku.github.io/home/index.html" class="btn-home" style="margin-top: 20px;">
+                🏠 Volver al Portal de Estudios
+            </a>
+
+        </div>
+    </main>
+
+    <script>
+        // CONFIGURACIÓN DINÁMICA (Centralizada mediante APP_CONFIG o valores por defecto)
+        const QUIZ_CONFIG = {
+            TOTAL_PREGUNTAS: (window.APP_CONFIG && window.APP_CONFIG.TOTAL_PREGUNTAS) || 20,
+            EXIGENCIA_PORCENTAJE: (window.APP_CONFIG && window.APP_CONFIG.EXIGENCIA) || 0.60,
+            CSV_URL: (window.APP_CONFIG && window.APP_CONFIG.CSV_URL) || 'preguntas.csv',
+            WEB_APP_URL: (window.APP_CONFIG && window.APP_CONFIG.WEB_APP_URL) || "https://script.google.com/macros/s/AKfycbxfAYkuxXaXYLOuuJvC6IKO4NujyVM3X-NrVRa9sQJomJsT8HQ9NRNZawLoxVaD38jb/exec"
+        };
+
+        let allQuestions = [];
+        let currentQuizQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timerInterval = null;
+        let totalSeconds = 0;
+
+        // INICIALIZACIÓN
+        window.onload = async () => {
+            // Actualizar interfaz con variables dinámicas
+            document.getElementById('desc-cant-preguntas').innerText = `${QUIZ_CONFIG.TOTAL_PREGUNTAS} preguntas aleatorias`;
+            await cargarBancoPreguntas();
+        };
+
+        async function cargarBancoPreguntas() {
+            try {
+                const response = await fetch(QUIZ_CONFIG.CSV_URL); 
+                if (!response.ok) throw new Error("No se pudo leer el archivo CSV");
+                
+                const text = await response.text();
+                allQuestions = parseCSVData(text);
+                
+                if (allQuestions.length > 0) {
+                    document.getElementById('db-loader').style.display = 'none';
+                    document.getElementById('start-btn').style.display = 'block';
+                } else {
+                    throw new Error("El archivo está vacío o mal formateado");
+                }
+            } catch (error) {
+                console.error("Error al cargar banco:", error);
+                document.getElementById('db-loader').innerHTML = '<span style="color: #dc2626;">⚠️ Error: No se encontró el banco de preguntas o no se pudo cargar.</span>';
+            }
+        }
+
+        // PARSER DE CSV
+        function parseCSVData(text) {
+            let result = [];
+            let row = [];
+            let inQuotes = false;
+            let value = "";
+            
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (char === '"') {
+                    if (inQuotes && text[i+1] === '"') {
+                        value += '"'; i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    row.push(value.trim());
+                    value = "";
+                } else if (char === '\n' && !inQuotes) {
+                    row.push(value.trim());
+                    processRow(row, result);
+                    row = []; value = "";
+                } else if (char !== '\r') {
+                    value += char;
+                }
+            }
+            if (value || row.length > 0) {
+                row.push(value.trim());
+                processRow(row, result);
+            }
+            return result;
+        }
+
+        function processRow(row, resultList) {
+            if (row.length >= 8 && row[0] !== "Número de Pregunta" && row[0] !== "0" && row[0] !== "") {
+                let ansLetter = row[7] ? row[7].trim().toUpperCase() : '';
+                let mapIdx = { 'A': 3, 'B': 4, 'C': 5, 'D': 6 };
+                let idx = mapIdx[ansLetter];
+
+                if (idx && row[idx]) {
+                    resultList.push({
+                        t: row[1] || 'General',
+                        q: row[2] || '',
+                        o: [row[3], row[4], row[5], row[6]].filter(Boolean),
+                        a: row[idx],
+                        j: row[8] || 'Sin justificación técnica disponible.'
+                    });
+                }
+            }
+        }
+
+        // LÓGICA DE JUEGO
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const secs = (seconds % 60).toString().padStart(2, '0');
+            return `${mins}:${secs}`;
+        }
+
+        function startTimer() {
+            totalSeconds = 0;
+            document.getElementById('timer').innerText = "⏱️ 00:00";
+            timerInterval = setInterval(() => {
+                totalSeconds++;
+                document.getElementById('timer').innerText = `⏱️ ${formatTime(totalSeconds)}`;
+            }, 1000);
+        }
+
+        function startQuiz() {
+            const nombre = document.getElementById('nombre-alumno').value.trim();
+            if (nombre === "") {
+                alert("Por favor, ingresa tu Nombre y Apellido antes de comenzar.");
+                return;
+            }
+
+            score = 0;
+            currentQuestionIndex = 0;
+            
+            let randomizedPool = shuffle([...allQuestions]);
+            currentQuizQuestions = randomizedPool.slice(0, QUIZ_CONFIG.TOTAL_PREGUNTAS);
+
+            document.getElementById('welcome-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+
+            startTimer();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            document.getElementById('justification-container').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            
+            const qData = currentQuizQuestions[currentQuestionIndex];
+            
+            document.getElementById('question-counter').innerText = `Pregunta ${currentQuestionIndex + 1} de ${QUIZ_CONFIG.TOTAL_PREGUNTAS}`;
+            document.getElementById('topic-container').innerText = qData.t;
+            document.getElementById('question-text').innerText = qData.q;
+            
+            const progressPercent = (currentQuestionIndex / QUIZ_CONFIG.TOTAL_PREGUNTAS) * 100;
+            document.getElementById('progress').style.width = `${progressPercent}%`;
+
+            let options = shuffle([...qData.o]);
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            options.forEach(optText => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optText;
+                btn.onclick = () => checkAnswer(btn, optText, qData.a, qData.j);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedBtn, selectedText, correctText, justification) {
+            const buttons = document.getElementById('options-container').getElementsByClassName('option-btn');
+            
+            for (let btn of buttons) {
+                btn.disabled = true;
+                if (btn.innerText === correctText) {
+                    btn.classList.add('correct');
+                }
+            }
+
+            if (selectedText === correctText) {
+                score++;
+            } else {
+                selectedBtn.classList.add('incorrect');
+            }
+
+            document.getElementById('justification-text').innerText = justification;
+            document.getElementById('justification-container').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < QUIZ_CONFIG.TOTAL_PREGUNTAS) {
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        // CÁLCULO DE NOTAS Y PERSISTENCIA
+        function calculateGrade(score, total) {
+            const percentage = score / total;
+            let grade = 1.0;
+            const cut = QUIZ_CONFIG.EXIGENCIA_PORCENTAJE;
+
+            if (percentage < cut) {
+                grade = 1.0 + (3.0 * (percentage / cut));
+            } else {
+                grade = 4.0 + (3.0 * ((percentage - cut) / (1.0 - cut)));
+            }
+            return Math.round(grade * 10) / 10;
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+
+            const finalGrade = calculateGrade(score, QUIZ_CONFIG.TOTAL_PREGUNTAS);
+            const timeString = formatTime(totalSeconds);
+            const nombre = document.getElementById('nombre-alumno').value.trim();
+            
+            const gradeOutput = document.getElementById('grade-output');
+            gradeOutput.innerText = finalGrade.toFixed(1);
+            gradeOutput.className = 'grade-badge ' + (finalGrade >= 4.0 ? 'aprobo' : 'reprobo');
+
+            document.getElementById('score-output').innerText = `Puntaje: ${score} / ${QUIZ_CONFIG.TOTAL_PREGUNTAS} correctas`;
+            document.getElementById('time-output').innerText = `Tiempo total: ${timeString}`;
+            
+            const feedbackMsg = document.getElementById('feedback-message');
+            feedbackMsg.innerText = "Guardando resultado en el servidor...";
+            feedbackMsg.style.color = "#475569";
+
+            if (!QUIZ_CONFIG.WEB_APP_URL) {
+                feedbackMsg.innerText = "⚠️ Resultado no guardado (URL del servidor no configurada).";
+                return;
+            }
+
+            const notaConComa = finalGrade.toFixed(1).replace('.', ','); 
+            const params = new URLSearchParams();
+            params.append('nombre', nombre);
+            params.append('nota', notaConComa); 
+            params.append('puntaje', score);
+            params.append('tiempo', timeString);
+
+            fetch(QUIZ_CONFIG.WEB_APP_URL, { 
+                method: 'POST', 
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString() 
+            })
+            .then(() => {
+                feedbackMsg.innerText = "🚀 ¡Resultado enviado a la nube con éxito!";
+                feedbackMsg.style.color = "#16a34a";
+                obtenerTablaLideres();
+            })
+            .catch(error => {
+                console.error('Error al guardar:', error);
+                feedbackMsg.innerText = "❌ Error de conexión al guardar el resultado.";
+                feedbackMsg.style.color = "#dc2626";
+            });
+        }
+
+        function goToWelcome() {
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('welcome-screen').classList.add('active');
+            document.getElementById('nombre-alumno').value = "";
+        }
+
+        // TABLA DE POSICIONES
+        function obtenerTablaLideres() {
+            const leaderboardSection = document.getElementById('leaderboard-section');
+            const leaderboardBody = document.getElementById('leaderboard-body');
+            
+            fetch(QUIZ_CONFIG.WEB_APP_URL)
+            .then(response => response.json())
+            .then(data => {
+                leaderboardBody.innerHTML = ""; 
+                
+                if (!data || data.length === 0) {
+                    leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#64748b;">No hay puntajes registrados aún.</td></tr>`;
+                } else {
+                    const top20Data = data.slice(0, 20);
+
+                    top20Data.forEach((alumno, index) => {
+                        let posicion = index + 1;
+                        if (index === 0) posicion = "🥇";
+                        if (index === 1) posicion = "🥈";
+                        if (index === 2) posicion = "🥉";
+
+                        const fila = document.createElement('tr');
+                        fila.className = "leaderboard-row";
+                        
+                        const notaNumerica = parseFloat(String(alumno.nota).replace(',', '.'));
+                        const colorNota = notaNumerica >= 4.0 ? '#16a34a' : '#dc2626';
+
+                        fila.innerHTML = `
+                            <td style="text-align: center; font-weight: 900; font-size: 1.1rem;">${posicion}</td>
+                            <td style="color: #1e293b; font-weight: 700;">${alumno.nombre}</td>
+                            <td style="text-align: center; font-weight: 900; color: #2563eb;">${alumno.puntaje}</td>
+                            <td style="text-align: center; font-weight: 900; color: ${colorNota};">${alumno.nota}</td>
+                            <td style="text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 700;">⏱️ ${alumno.tiempo}</td>
+                        `;
+                        leaderboardBody.appendChild(fila);
+                    });
+                }
+                leaderboardSection.style.display = "block";
+            })
+            .catch(err => {
+                console.error("Error al obtener ranking:", err);
+            });
+        }
+    </script>
+</body>
+</html>
