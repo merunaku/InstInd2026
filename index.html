@@ -109,13 +109,9 @@
     </main>
 
     <script>
-        // LECTURA DINÁMICA DE CONFIG.JS
-        const QUIZ_CONFIG = {
-            TOTAL_PREGUNTAS: (typeof CONFIG !== 'undefined' && CONFIG.TOTAL_PREGUNTAS) || 20,
-            EXIGENCIA_PORCENTAJE: (typeof CONFIG !== 'undefined' && CONFIG.EXIGENCIA_MINIMA) || 0.60,
-            CSV_URL: (typeof CONFIG !== 'undefined' && CONFIG.REPOSITORIO_CSV && CONFIG.REPOSITORIO_CSV.INSTRUMENTACION) || 'preguntas.csv',
-            WEB_APP_URL: (typeof CONFIG !== 'undefined' && CONFIG.APIS && CONFIG.APIS.INSTRUMENTACION) || ''
-        };
+        // Identificador de esta materia. Debe coincidir EXACTAMENTE con el sufijo
+        // de las pestañas del Sheet: "examen_instind" y "Puntajes_instind".
+        const RAMO = "instind";
 
         let allQuestions = [];
         let currentQuizQuestions = [];
@@ -123,80 +119,55 @@
         let score = 0;
         let timerInterval = null;
         let totalSeconds = 0;
+        let QUIZ_CONFIG = { TOTAL_PREGUNTAS: 20, EXIGENCIA_PORCENTAJE: 0.60 }; // defaults de respaldo
 
         window.onload = async () => {
+            // 1. Esperamos a que la configuración global (pestaña "config") esté lista.
+            //    config.js dispara cargarConfiguracion() apenas carga y guarda esa promesa
+            //    en window.configListo, para que cualquier script pueda esperarla sin
+            //    disparar una segunda descarga.
+            if (window.configListo) {
+                await window.configListo;
+            } else if (typeof cargarConfiguracion === 'function') {
+                await cargarConfiguracion(); // respaldo por si config.js es una versión vieja
+            }
+
+            // 2. Armamos la config específica de este cuestionario a partir de CONFIG
+            QUIZ_CONFIG = {
+                TOTAL_PREGUNTAS: parseInt(CONFIG.TOTAL_PREGUNTAS) || 20,
+                EXIGENCIA_PORCENTAJE: parseFloat(CONFIG.EXIGENCIA_MINIMA) || 0.60
+            };
+
             document.getElementById('desc-cant-preguntas').innerText = `${QUIZ_CONFIG.TOTAL_PREGUNTAS} preguntas aleatorias`;
             document.getElementById('desc-exigencia').innerText = `${Math.round(QUIZ_CONFIG.EXIGENCIA_PORCENTAJE * 100)}% de exigencia (Nota 4.0)`;
+
             await cargarBancoPreguntas();
         };
 
         async function cargarBancoPreguntas() {
             try {
-                const response = await fetch(QUIZ_CONFIG.CSV_URL); 
-                if (!response.ok) throw new Error("No se pudo leer el archivo CSV");
-                
-                const text = await response.text();
-                allQuestions = parseCSVData(text);
-                
-                if (allQuestions.length > 0) {
+                if (typeof API_UNIFICADA === 'undefined' || !API_UNIFICADA || API_UNIFICADA.includes('AQUI_PEGA')) {
+                    throw new Error("La URL del backend (API_UNIFICADA) no está configurada en config.js");
+                }
+
+                const response = await fetch(`${API_UNIFICADA}?action=getPreguntas&ramo=${RAMO}`);
+                if (!response.ok) throw new Error("No se pudo contactar al servidor");
+
+                const data = await response.json();
+
+                if (data && data.error) throw new Error(data.error);
+
+                allQuestions = data;
+
+                if (Array.isArray(allQuestions) && allQuestions.length > 0) {
                     document.getElementById('db-loader').style.display = 'none';
                     document.getElementById('start-btn').style.display = 'block';
                 } else {
-                    throw new Error("El archivo CSV está vacío o desestructurado");
+                    throw new Error("El banco de preguntas está vacío");
                 }
             } catch (error) {
                 console.error("Error al cargar banco:", error);
                 document.getElementById('db-loader').innerHTML = '<span style="color: var(--error-color);">⚠️ Error: No se encontró el banco de preguntas o no se pudo cargar.</span>';
-            }
-        }
-
-        function parseCSVData(text) {
-            let result = [];
-            let row = [];
-            let inQuotes = false;
-            let value = "";
-            
-            for (let i = 0; i < text.length; i++) {
-                let char = text[i];
-                if (char === '"') {
-                    if (inQuotes && text[i+1] === '"') {
-                        value += '"'; i++;
-                    } else {
-                        inQuotes = !inQuotes;
-                    }
-                } else if (char === ',' && !inQuotes) {
-                    row.push(value.trim());
-                    value = "";
-                } else if (char === '\n' && !inQuotes) {
-                    row.push(value.trim());
-                    processRow(row, result);
-                    row = []; value = "";
-                } else if (char !== '\r') {
-                    value += char;
-                }
-            }
-            if (value || row.length > 0) {
-                row.push(value.trim());
-                processRow(row, result);
-            }
-            return result;
-        }
-
-        function processRow(row, resultList) {
-            if (row.length >= 8 && row[0] !== "Número de Pregunta" && row[0] !== "0" && row[0] !== "") {
-                let ansLetter = row[7] ? row[7].trim().toUpperCase() : '';
-                let mapIdx = { 'A': 3, 'B': 4, 'C': 5, 'D': 6 };
-                let idx = mapIdx[ansLetter];
-
-                if (idx && row[idx]) {
-                    resultList.push({
-                        t: row[1] || 'General',
-                        q: row[2] || '',
-                        o: [row[3], row[4], row[5], row[6]].filter(Boolean),
-                        a: row[idx],
-                        j: row[8] || 'Sin justificación técnica disponible.'
-                    });
-                }
             }
         }
 
@@ -333,31 +304,33 @@
             feedbackMsg.innerText = "Guardando resultado en el servidor...";
             feedbackMsg.style.color = "#475569";
 
-            if (!QUIZ_CONFIG.WEB_APP_URL) {
+            if (typeof API_UNIFICADA === 'undefined' || !API_UNIFICADA || API_UNIFICADA.includes('AQUI_PEGA')) {
                 feedbackMsg.innerText = "⚠️ Resultado no guardado (URL del servidor no configurada).";
                 return;
             }
 
-            const notaConComa = finalGrade.toFixed(1).replace('.', ','); 
-            
-            // CONSTRUCCIÓN DEL PAYLOAD JSON 
-            // Esto es lo que el script de Google (Backend) espera recibir y parsear.
+            const notaConComa = finalGrade.toFixed(1).replace('.', ',');
+
+            // CONSTRUCCIÓN DEL PAYLOAD JSON
+            // "ramo" es indispensable: el backend lo usa para ubicar la pestaña "Puntajes_<ramo>".
             const payload = {
+                ramo: RAMO,
                 nombre: nombre,
                 nota: notaConComa,
                 puntaje: score,
                 tiempo: timeString
             };
 
-            // SE HACE EL POST COMO TEXT/PLAIN PARA EVITAR ERRORES CORS EN GOOGLE APPS SCRIPT
-            fetch(QUIZ_CONFIG.WEB_APP_URL, { 
+            // SE ENVÍA COMO text/plain PARA EVITAR EL PREFLIGHT DE CORS EN APPS SCRIPT.
+            // El backend debe parsear e.postData.contents como JSON (no e.parameter).
+            fetch(API_UNIFICADA, { 
                 method: 'POST', 
                 mode: 'no-cors', 
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(payload) 
             })
             .then(() => {
-                // Al usar 'no-cors' la respuesta es opaca, asumimos éxito si la red responde
+                // Con 'no-cors' la respuesta es opaca: asumimos éxito si la red respondió.
                 feedbackMsg.innerText = "🚀 ¡Resultado enviado a la nube con éxito!";
                 feedbackMsg.style.color = "var(--success-color)";
                 obtenerTablaLideres();
@@ -379,7 +352,7 @@
             const leaderboardSection = document.getElementById('leaderboard-section');
             const leaderboardBody = document.getElementById('leaderboard-body');
             
-            fetch(QUIZ_CONFIG.WEB_APP_URL)
+            fetch(`${API_UNIFICADA}?action=getLeaderboard&ramo=${RAMO}`)
             .then(response => response.json())
             .then(data => {
                 leaderboardBody.innerHTML = ""; 
