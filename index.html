@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Examen Instrumentación Industrial 2026</title>
+    <title>Instrumentación Industrial 2026</title>
     
     <!-- Fuentes Google -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
                 <div class="details-box">
                     <strong>Condiciones de Evaluación:</strong>
                     <ul>
-                        <li><strong id="desc-cant-preguntas">20 preguntas aleatorias</strong> extraídas del banco oficial.</li>
+                        <li><strong id="desc-cant-preguntas">20 preguntas aleatorias</strong> extraídas del banco de preguntas.</li>
                         <li>Las alternativas se barajan automáticamente en cada intento.</li>
                         <li>Escala de evaluación: <strong id="desc-exigencia">60% de exigencia (Nota 4.0)</strong>.</li>
                         <li>¡Mucho éxito en tu preparación!</li>
@@ -44,7 +44,7 @@
                     🔄 Conectando con el servidor y descargando preguntas...
                 </div>
 
-                <button id="start-btn" class="btn" style="display:none;" onclick="startQuiz()">Iniciar Evaluación Aleatoria</button>
+                <button id="start-btn" class="btn" style="display:none;" onclick="startQuiz()">Iniciar Evaluación</button>
             </div>
 
             <!-- PANTALLA 2: EVALUACIÓN EN CURSO -->
@@ -102,7 +102,7 @@
 
             <!-- RETORNO AL PORTAL -->
             <a href="https://merunaku.github.io/home/index.html" class="btn-home" style="margin-top: 20px;">
-                🏠 Volver al Portal de Estudios
+                🏠 Volver a Página Principal
             </a>
 
         </div>
@@ -339,19 +339,25 @@
             }
 
             const notaConComa = finalGrade.toFixed(1).replace('.', ','); 
-            const params = new URLSearchParams();
-            params.append('nombre', nombre);
-            params.append('nota', notaConComa); 
-            params.append('puntaje', score);
-            params.append('tiempo', timeString);
+            
+            // CONSTRUCCIÓN DEL PAYLOAD JSON 
+            // Esto es lo que el script de Google (Backend) espera recibir y parsear.
+            const payload = {
+                nombre: nombre,
+                nota: notaConComa,
+                puntaje: score,
+                tiempo: timeString
+            };
 
+            // SE HACE EL POST COMO TEXT/PLAIN PARA EVITAR ERRORES CORS EN GOOGLE APPS SCRIPT
             fetch(QUIZ_CONFIG.WEB_APP_URL, { 
                 method: 'POST', 
                 mode: 'no-cors', 
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params.toString() 
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(payload) 
             })
             .then(() => {
+                // Al usar 'no-cors' la respuesta es opaca, asumimos éxito si la red responde
                 feedbackMsg.innerText = "🚀 ¡Resultado enviado a la nube con éxito!";
                 feedbackMsg.style.color = "var(--success-color)";
                 obtenerTablaLideres();
@@ -414,5 +420,3 @@
     </script>
 </body>
 </html>
-
-
