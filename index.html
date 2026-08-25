@@ -360,9 +360,9 @@
                 if (!data || data.length === 0) {
                     leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#64748b;">No hay puntajes registrados aún.</td></tr>`;
                 } else {
-                    const top20Data = data.slice(0, 20);
+                    const filas = data; // el backend ya limita la cantidad según CANTIDAD_RANKING
 
-                    top20Data.forEach((alumno, index) => {
+                    filas.forEach((alumno, index) => {
                         let posicion = index + 1;
                         if (index === 0) posicion = "🥇";
                         if (index === 1) posicion = "🥈";
