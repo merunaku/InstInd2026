@@ -38,7 +38,7 @@
                     </ul>
                 </div>
 
-                <input type="text" id="nombre-alumno" class="input-nombre" placeholder="Ingresa tu Nombre y Apellido para comenzar">
+                <input type="text" id="nombre-alumno" class="input-nombre" placeholder="Ingresa tu Nombre y Apellido para comenzar" maxlength="50">
 
                 <div id="db-loader" style="text-align: center; color: #d97706; font-weight: bold; margin-top: 15px;">
                     🔄 Conectando con el servidor y descargando preguntas...
@@ -50,11 +50,10 @@
             <!-- PANTALLA 2: EVALUACIÓN EN CURSO -->
             <div id="quiz-screen" class="screen">
                 <div class="progress-bar"><div id="progress" class="progress"></div></div>
-                <div>
+                <div class="progress-header">
                     <span id="question-counter" style="font-size: 0.95rem; font-weight: 700; color: #64748b;">Pregunta 1</span>
                     <span id="timer" class="timer-txt">⏱️ 00:00</span>
                 </div>
-                <div style="clear:both;"></div>
                 
                 <div style="margin-top: 12px; text-align: left;">
                     <div id="topic-container" class="topic-tag">Tópico</div>
@@ -76,7 +75,7 @@
                 <div class="score-display">
                     <div style="font-size: 1.1rem; color: #475569; text-align: center; font-weight: 700;">Tu calificación final es:</div>
                     <div id="grade-output" class="grade-badge">1.0</div>
-                    <div id="score-output" style="font-size: 1.15rem; font-weight: 900; color: #1e293b; text-align: center;">Puntaje: 0 correctas</div>
+                    <div id="score-output" style="font-size: 1.15rem; font-weight: 900; color: var(--text-color); text-align: center;">Puntaje: 0 correctas</div>
                     <div id="time-output" style="font-size: 1rem; color: #64748b; margin-top: 6px; text-align: center; font-weight: 700;">Tiempo total: 00:00</div>
                     <div id="feedback-message" style="margin-top: 20px; font-weight: 900; font-size: 1.1rem; text-align: center;">Guardando resultado en el servidor...</div>
                 </div>
@@ -109,8 +108,6 @@
     </main>
 
     <script>
-        // Identificador de esta materia. Debe coincidir EXACTAMENTE con el sufijo
-        // de las pestañas del Sheet: "examen_instind" y "Puntajes_instind".
         const RAMO = "instind";
 
         let allQuestions = [];
@@ -119,34 +116,24 @@
         let score = 0;
         let timerInterval = null;
         let totalSeconds = 0;
-        let QUIZ_CONFIG = { TOTAL_PREGUNTAS: 20, EXIGENCIA_PORCENTAJE: 0.60 }; // defaults de respaldo
+        let QUIZ_CONFIG = { TOTAL_PREGUNTAS: 20, EXIGENCIA_PORCENTAJE: 0.60 };
 
         window.onload = async () => {
-            // 1. Esperamos a que la configuración global (pestaña "config") esté lista.
-            //    config.js dispara cargarConfiguracion() apenas carga y guarda esa promesa
-            //    en window.configListo, para que cualquier script pueda esperarla sin
-            //    disparar una segunda descarga.
             if (window.configListo) {
                 await window.configListo;
-            } else if (typeof cargarConfiguracion === 'function') {
-                await cargarConfiguracion(); // respaldo por si config.js es una versión vieja
             }
 
-            // 2. Armamos la config específica de este cuestionario a partir de CONFIG
             QUIZ_CONFIG = {
-                TOTAL_PREGUNTAS: parseInt(CONFIG.TOTAL_PREGUNTAS) || 20,
+                TOTAL_PREGUNTAS: parseInt(CONFIG.TOTAL_PREGUNTAS, 10) || 20,
                 EXIGENCIA_PORCENTAJE: parseFloat(CONFIG.EXIGENCIA_MINIMA) || 0.60
             };
-
-            document.getElementById('desc-cant-preguntas').innerText = `${QUIZ_CONFIG.TOTAL_PREGUNTAS} preguntas aleatorias`;
-            document.getElementById('desc-exigencia').innerText = `${Math.round(QUIZ_CONFIG.EXIGENCIA_PORCENTAJE * 100)}% de exigencia (Nota 4.0)`;
 
             await cargarBancoPreguntas();
         };
 
         async function cargarBancoPreguntas() {
             try {
-                if (typeof API_UNIFICADA === 'undefined' || !API_UNIFICADA || API_UNIFICADA.includes('AQUI_PEGA')) {
+                if (typeof API_UNIFICADA === 'undefined' || !API_UNIFICADA) {
                     throw new Error("La URL del backend (API_UNIFICADA) no está configurada en config.js");
                 }
 
@@ -154,20 +141,25 @@
                 if (!response.ok) throw new Error("No se pudo contactar al servidor");
 
                 const data = await response.json();
-
                 if (data && data.error) throw new Error(data.error);
 
-                allQuestions = data;
+                allQuestions = Array.isArray(data) ? data : [];
 
-                if (Array.isArray(allQuestions) && allQuestions.length > 0) {
+                if (allQuestions.length > 0) {
+                    // Ajusta dinámicamente si el banco tiene menos preguntas de las configuradas
+                    QUIZ_CONFIG.TOTAL_PREGUNTAS = Math.min(QUIZ_CONFIG.TOTAL_PREGUNTAS, allQuestions.length);
+
+                    document.getElementById('desc-cant-preguntas').innerText = `${QUIZ_CONFIG.TOTAL_PREGUNTAS} preguntas aleatorias`;
+                    document.getElementById('desc-exigencia').innerText = `${Math.round(QUIZ_CONFIG.EXIGENCIA_PORCENTAJE * 100)}% de exigencia (Nota 4.0)`;
+
                     document.getElementById('db-loader').style.display = 'none';
                     document.getElementById('start-btn').style.display = 'block';
                 } else {
-                    throw new Error("El banco de preguntas está vacío");
+                    throw new Error("El banco de preguntas para este ramo está vacío");
                 }
             } catch (error) {
                 console.error("Error al cargar banco:", error);
-                document.getElementById('db-loader').innerHTML = '<span style="color: var(--error-color);">⚠️ Error: No se encontró el banco de preguntas o no se pudo cargar.</span>';
+                document.getElementById('db-loader').innerHTML = `<span style="color: var(--error-color);">⚠️ Error: ${error.message}</span>`;
             }
         }
 
@@ -185,9 +177,14 @@
             return `${mins}:${secs}`;
         }
 
+        function escapeHTML(str) {
+            return (str ?? '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
         function startTimer() {
             totalSeconds = 0;
             document.getElementById('timer').innerText = "⏱️ 00:00";
+            if (timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 totalSeconds++;
                 document.getElementById('timer').innerText = `⏱️ ${formatTime(totalSeconds)}`;
@@ -222,7 +219,7 @@
             const qData = currentQuizQuestions[currentQuestionIndex];
             
             document.getElementById('question-counter').innerText = `Pregunta ${currentQuestionIndex + 1} de ${QUIZ_CONFIG.TOTAL_PREGUNTAS}`;
-            document.getElementById('topic-container').innerText = qData.t;
+            document.getElementById('topic-container').innerText = qData.t || 'General';
             document.getElementById('question-text').innerText = qData.q;
             
             const progressPercent = (currentQuestionIndex / QUIZ_CONFIG.TOTAL_PREGUNTAS) * 100;
@@ -243,21 +240,23 @@
 
         function checkAnswer(selectedBtn, selectedText, correctText, justification) {
             const buttons = document.getElementById('options-container').getElementsByClassName('option-btn');
+            const cleanCorrect = String(correctText || '').trim();
+            const cleanSelected = String(selectedText || '').trim();
             
             for (let btn of buttons) {
                 btn.disabled = true;
-                if (btn.innerText === correctText) {
+                if (String(btn.innerText).trim() === cleanCorrect) {
                     btn.classList.add('correct');
                 }
             }
 
-            if (selectedText === correctText) {
+            if (cleanSelected === cleanCorrect) {
                 score++;
             } else {
                 selectedBtn.classList.add('incorrect');
             }
 
-            document.getElementById('justification-text').innerText = justification;
+            document.getElementById('justification-text').innerText = justification || 'Sin información adicional.';
             document.getElementById('justification-container').style.display = 'block';
             document.getElementById('next-btn').style.display = 'inline-block';
         }
@@ -272,6 +271,7 @@
         }
 
         function calculateGrade(score, total) {
+            if (total <= 0) return 1.0;
             const percentage = score / total;
             let grade = 1.0;
             const cut = QUIZ_CONFIG.EXIGENCIA_PORCENTAJE;
@@ -304,15 +304,13 @@
             feedbackMsg.innerText = "Guardando resultado en el servidor...";
             feedbackMsg.style.color = "#475569";
 
-            if (typeof API_UNIFICADA === 'undefined' || !API_UNIFICADA || API_UNIFICADA.includes('AQUI_PEGA')) {
+            if (typeof API_UNIFICADA === 'undefined' || !API_UNIFICADA) {
                 feedbackMsg.innerText = "⚠️ Resultado no guardado (URL del servidor no configurada).";
                 return;
             }
 
             const notaConComa = finalGrade.toFixed(1).replace('.', ',');
 
-            // CONSTRUCCIÓN DEL PAYLOAD JSON
-            // "ramo" es indispensable: el backend lo usa para ubicar la pestaña "Puntajes_<ramo>".
             const payload = {
                 ramo: RAMO,
                 nombre: nombre,
@@ -321,8 +319,6 @@
                 tiempo: timeString
             };
 
-            // SE ENVÍA COMO text/plain PARA EVITAR EL PREFLIGHT DE CORS EN APPS SCRIPT.
-            // El backend debe parsear e.postData.contents como JSON (no e.parameter).
             fetch(API_UNIFICADA, { 
                 method: 'POST', 
                 mode: 'no-cors', 
@@ -330,7 +326,6 @@
                 body: JSON.stringify(payload) 
             })
             .then(() => {
-                // Con 'no-cors' la respuesta es opaca: asumimos éxito si la red respondió.
                 feedbackMsg.innerText = "🚀 ¡Resultado enviado a la nube con éxito!";
                 feedbackMsg.style.color = "var(--success-color)";
                 obtenerTablaLideres();
@@ -360,9 +355,7 @@
                 if (!data || data.length === 0) {
                     leaderboardBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#64748b;">No hay puntajes registrados aún.</td></tr>`;
                 } else {
-                    const filas = data; // el backend ya limita la cantidad según CANTIDAD_RANKING
-
-                    filas.forEach((alumno, index) => {
+                    data.forEach((alumno, index) => {
                         let posicion = index + 1;
                         if (index === 0) posicion = "🥇";
                         if (index === 1) posicion = "🥈";
@@ -376,10 +369,10 @@
 
                         fila.innerHTML = `
                             <td style="text-align: center; font-weight: 900; font-size: 1.1rem;">${posicion}</td>
-                            <td style="color: #1e293b; font-weight: 700;">${alumno.nombre}</td>
+                            <td style="color: var(--text-color); font-weight: 700;">${escapeHTML(alumno.nombre)}</td>
                             <td style="text-align: center; font-weight: 900; color: #2563eb;">${alumno.puntaje}</td>
-                            <td style="text-align: center; font-weight: 900; color: ${colorNota};">${alumno.nota}</td>
-                            <td style="text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 700;">⏱️ ${alumno.tiempo}</td>
+                            <td style="text-align: center; font-weight: 900; color: ${colorNota};">${escapeHTML(alumno.nota)}</td>
+                            <td style="text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 700;">⏱️ ${escapeHTML(alumno.tiempo)}</td>
                         `;
                         leaderboardBody.appendChild(fila);
                     });
